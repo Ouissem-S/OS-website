@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projects • Ouissem</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Background (neural/net or leave empty if not using script.js) -->
+    <canvas id="network"></canvas>
+
+    <main class="container" role="main">
+        <h1>Projects</h1>
+        <p class="lead">
+            A selection of personal and academic work. Short, focused summaries only — no external links.
+        </p>
+
+        <!-- Project 1 -->
+        <section aria-labelledby="p-motison" style="text-align:left; margin-top:1rem">
+            <h2 id="p-motison" style="margin:.2rem 0 .2rem; color:var(--txt)">Motison — mood → music assistant</h2>
+            <p style="margin:.2rem 0 .6rem; color:#6b5a67;"><strong>Tech:</strong> Python, OpenAI API (LLM/NLP), Spotify API</p>
+            <ul style="margin:0 0 1.2rem 1.1rem; color:#5a4355;">
+                <li>Developed a Python backend that analyses user text (NLP) to detect mood and generate supportive responses.</li>
+                <li>Implemented adaptive logic: if a mood isn’t in the predefined set, the LLM creates a new label with tone and audio traits.</li>
+                <li>Integrated Spotify recommendations to suggest a fitting song/playlist and a reassurance message in one response.</li>
+                <li>Streamlined prompt templates and data structures for repeatable, safe outputs across moods.</li>
+            </ul>
+        </section>
+
+        <!-- Project 2 -->
+        <section aria-labelledby="p-unix" style="text-align:left">
+            <h2 id="p-unix" style="margin:.2rem 0 .2rem; color:var(--txt)">UNIX Coursework — web app</h2>
+            <p style="margin:.2rem 0 .6rem; color:#6b5a67;"><strong>Tech:</strong> HTML/CSS/JavaScript (coursework); backend logic & data handling (my role)</p>
+            <ul style="margin:0 0 1.2rem 1.1rem; color:#5a4355;">
+                <li>Implemented core backend logic and routes to support the course web application.</li>
+                <li>Resolved integration issues between data handling and the front-end layer, improving reliability.</li>
+                <li>Wrote clear documentation for setup and testing to support teammates.</li>
+            </ul>
+        </section>
+
+        <!-- Project 3 -->
+        <section aria-labelledby="p-ai-cw" style="text-align:left">
+            <h2 id="p-ai-cw" style="margin:.2rem 0 .2rem; color:var(--txt)">AI Coursework Minis</h2>
+            <p style="margin:.2rem 0 .6rem; color:#6b5a67;"><strong>Tech:</strong> Python, basic NLP, prompt engineering</p>
+            <ul style="margin:0 0 1.2rem 1.1rem; color:#5a4355;">
+                <li>Explored sentiment/mood labelling on short texts and compared prompt styles for consistency.</li>
+                <li>Documented evaluation notes and error cases to improve future prompts.</li>
+            </ul>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="actions" aria-label="Navigation" style="margin-top:1.2rem">
+            <a class="btn btn-outline full" href="./index.html">← Back to Home</a>
+        </nav>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

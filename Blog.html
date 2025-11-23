@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="Blog-Page">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog • Ouissem</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="Blog-Page">
+    <canvas id="network"></canvas>
+
+    <!-- Scrolling Banner -->
+    <div class="ticker">
+        <span class="ticker-text">
+        Welcome to my Blog • Thoughts, reflections, ideas, and quiet observations ✧
+    </span>
+    </div>
+
+    <!-- Admin / owner controls (hidden unless unlocked) -->
+    <div class="blog-actions">
+        <span id="adminChip" class="admin-chip" style="display:none;">Admin mode</span>
+    </div>
+
+    <!-- Floating Create Post Button (only when Admin Mode is ON) -->
+    <a id="createBtn" href="new-post.html" class="fab-btn" style="display:none;">+ Create New Post</a>
+
+    <!-- Blog Feed -->
+    <div class="feed-container">
+
+        <a href="#" class="post-card">
+            <img src="post1.jpg" class="post-img" alt="">
+            <div class="post-info">
+                <div class="post-preview">A quiet thought about growth and patience...</div>
+                <div class="date">9 Nov 2025</div>
+            </div>
+        </a>
+
+        <a href="#" class="post-card">
+            <img src="post2.jpg" class="post-img" alt="">
+            <div class="post-info">
+                <div class="post-preview">How small decisions shape everything...</div>
+                <div class="date">5 Nov 2025</div>
+            </div>
+        </a>
+
+    </div>
+
+    <script>
+        // Admin toggle system
+        const OWNER_KEY = "blog_owner_mode";
+        const PASS = "wissem-oui";
+
+        const createBtn = document.getElementById("createBtn");
+        const adminChip = document.getElementById("adminChip");
+
+        function updateAdminUI() {
+            const isOwner = localStorage.getItem(OWNER_KEY) === "true";
+            createBtn.style.display = isOwner ? "inline-block" : "none";
+            adminChip.style.display = isOwner ? "inline-block" : "none";
+        }
+
+        updateAdminUI();
+
+        // Toggle admin mode: OPTION + SHIFT + O
+        document.addEventListener("keydown", e => {
+            if (e.key.toLowerCase() === "o" && e.shiftKey && e.altKey) {
+                const input = prompt("Password:");
+                if (input === PASS) {
+                    localStorage.setItem(OWNER_KEY, "true");
+                } else {
+                    localStorage.removeItem(OWNER_KEY);
+                }
+                updateAdminUI();
+            }
+        });
+    </script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
