@@ -642,7 +642,7 @@ body::after {
     margin-left: 20px;
     padding: 8px 14px;
     border-radius: 999px;
-    background: rgba(110, 42, 79, 0.08);
+    background: rgba(205, 177, 193, 0.08);
     color: var(--txt);
     border: 1px solid var(--border);
     font-size: .85rem;
