@@ -924,7 +924,7 @@ function NewPostPage({ editId }: { editId?: string }) {
     };
     const posts = (await getPostsAsync()).filter(p => p.id !== "welcome-blog" && p.id !== post.id);
     try { await savePosts([post, ...posts]); navigate("/blog"); }
-    catch { setEditorError("Post too large for this browser to save. Try a shorter video or an embed link."); }
+    catch (err) { setEditorError(err instanceof Error ? err.message : "Failed to save post to GitHub. Check your token and try again."); }
   };
 
   const updateCover = async (file?: File) => {

@@ -12,13 +12,14 @@ export type BlogPost = {
   };
 };
 
-const BLOG_POSTS_KEY = "portfolio_blog_posts";
-const BLOG_OWNER_KEY = "portfolio_blog_owner";
-const BLOG_PASSWORD = "wissem-oui";
-const BLOG_DB_NAME = "portfolio_blog_db";
-const BLOG_DB_VERSION = 1;
-const BLOG_STORE_NAME = "posts";
-const BLOG_STORE_KEY = "all_posts";
+const BLOG_OWNER_KEY   = "portfolio_blog_owner";
+const BLOG_PASSWORD    = "wissem-oui";
+const GITHUB_TOKEN_KEY = "portfolio_github_token";
+const GITHUB_REPO      = "Ouissem-S/OS-website";
+const GITHUB_BRANCH    = "main";
+const POSTS_PATH       = "posts/posts.json";
+const RAW_URL          = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${POSTS_PATH}`;
+const API_URL          = `https://api.github.com/repos/${GITHUB_REPO}/contents/${POSTS_PATH}`;
 
 export const samplePosts: BlogPost[] = [
   {
@@ -41,7 +42,7 @@ Recent robotics news makes that clear. Meta has acquired a humanoid robotics sta
 That changes how I think about AI. A chatbot can be wrong and correct itself in text, but a robot acting in the real world has to deal with gravity, friction, timing, safety, and uncertainty. Intelligence becomes more than prediction. It becomes action.
 
 ## Why robotics feels exciting
-This is why robotics feels like one of the most exciting areas of AI. It combines perception, language, control, planning, and real-world feedback. It also shows how difficult “general intelligence” really is. Understanding a sentence is one challenge. Understanding how to pick up a fragile object, navigate a room, or work safely near people is another.
+This is why robotics feels like one of the most exciting areas of AI. It combines perception, language, control, planning, and real-world feedback. It also shows how difficult "general intelligence" really is. Understanding a sentence is one challenge. Understanding how to pick up a fragile object, navigate a room, or work safely near people is another.
 
 For me, this is the kind of AI progress worth watching: not just models that can answer questions, but systems that can eventually help in homes, hospitals, factories, and everyday environments.`,
     date: "2026-05-14"
@@ -49,83 +50,67 @@ For me, this is the kind of AI progress worth watching: not just models that can
 ];
 
 export function getPosts(): BlogPost[] {
-  const saved = window.localStorage.getItem(BLOG_POSTS_KEY);
-  if (!saved) return samplePosts;
-
-  try {
-    const posts = JSON.parse(saved) as BlogPost[];
-    return posts.length ? posts : samplePosts;
-  } catch {
-    return samplePosts;
-  }
+  return samplePosts;
 }
 
-function openBlogDb() {
-  return new Promise<IDBDatabase>((resolve, reject) => {
-    const request = window.indexedDB.open(BLOG_DB_NAME, BLOG_DB_VERSION);
-
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(BLOG_STORE_NAME)) {
-        db.createObjectStore(BLOG_STORE_NAME);
-      }
-    };
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-async function readPostsFromIndexedDb() {
-  const db = await openBlogDb();
-
-  return new Promise<BlogPost[]>((resolve, reject) => {
-    const transaction = db.transaction(BLOG_STORE_NAME, "readonly");
-    const store = transaction.objectStore(BLOG_STORE_NAME);
-    const request = store.get(BLOG_STORE_KEY);
-
-    request.onsuccess = () => resolve((request.result as BlogPost[] | undefined) ?? []);
-    request.onerror = () => reject(request.error);
-    transaction.oncomplete = () => db.close();
-  });
-}
-
-async function writePostsToIndexedDb(posts: BlogPost[]) {
-  const db = await openBlogDb();
-
-  return new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction(BLOG_STORE_NAME, "readwrite");
-    const store = transaction.objectStore(BLOG_STORE_NAME);
-    const request = store.put(posts, BLOG_STORE_KEY);
-
-    request.onerror = () => reject(request.error);
-    transaction.oncomplete = () => {
-      db.close();
-      resolve();
-    };
-    transaction.onerror = () => reject(transaction.error);
-  });
+function toBase64(str: string): string {
+  return btoa(unescape(encodeURIComponent(str)));
 }
 
 export async function getPostsAsync(): Promise<BlogPost[]> {
   try {
-    const saved = await readPostsFromIndexedDb();
-    if (saved.length) return saved;
-
-    const legacyPosts = getPosts();
-    if (legacyPosts.length) {
-      await writePostsToIndexedDb(legacyPosts);
-      return legacyPosts;
-    }
-
-    return samplePosts;
+    const response = await fetch(`${RAW_URL}?t=${Date.now()}`);
+    if (!response.ok) return samplePosts;
+    const posts = await response.json() as BlogPost[];
+    return Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
   } catch {
-    return getPosts();
+    return samplePosts;
   }
 }
 
-export async function savePosts(posts: BlogPost[]) {
-  await writePostsToIndexedDb(posts);
+export async function savePosts(posts: BlogPost[]): Promise<void> {
+  const token = window.localStorage.getItem(GITHUB_TOKEN_KEY);
+  if (!token) throw new Error("No GitHub token stored. Log out and log in again to enter your token.");
+
+  const shaResponse = await fetch(API_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json"
+    }
+  });
+
+  if (shaResponse.status === 401) {
+    window.localStorage.removeItem(GITHUB_TOKEN_KEY);
+    throw new Error("GitHub token rejected (401). Log out and log in again to re-enter your token.");
+  }
+
+  if (!shaResponse.ok) {
+    throw new Error(`GitHub API error fetching file info: ${shaResponse.status}`);
+  }
+
+  const { sha } = await shaResponse.json() as { sha: string };
+  const content = toBase64(JSON.stringify(posts, null, 2));
+
+  const putResponse = await fetch(API_URL, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message: "Update posts", content, sha, branch: GITHUB_BRANCH })
+  });
+
+  if (putResponse.status === 401) {
+    window.localStorage.removeItem(GITHUB_TOKEN_KEY);
+    throw new Error("GitHub token rejected (401). Log out and log in again to re-enter your token.");
+  }
+
+  if (!putResponse.ok) {
+    const text = await putResponse.text();
+    throw new Error(`GitHub API error saving posts (${putResponse.status}): ${text}`);
+  }
+
   window.dispatchEvent(new CustomEvent("portfolio-posts-updated", { detail: posts }));
 }
 
@@ -133,19 +118,26 @@ export function isOwner() {
   return window.localStorage.getItem(BLOG_OWNER_KEY) === "true";
 }
 
-export function requestOwnerAccess() {
+export function requestOwnerAccess(): boolean {
   if (isOwner()) return true;
 
   const attempt = window.prompt("Owner password:");
-  if (attempt === BLOG_PASSWORD) {
-    window.localStorage.setItem(BLOG_OWNER_KEY, "true");
+  if (attempt !== BLOG_PASSWORD) {
+    window.localStorage.removeItem(BLOG_OWNER_KEY);
     window.dispatchEvent(new Event("portfolio-owner-updated"));
-    return true;
+    return false;
   }
 
-  window.localStorage.removeItem(BLOG_OWNER_KEY);
+  if (!window.localStorage.getItem(GITHUB_TOKEN_KEY)) {
+    const token = window.prompt(
+      "Enter your GitHub Personal Access Token.\n(Fine-grained PAT with contents: write on this repo — stored only in your browser.)"
+    );
+    if (token?.trim()) window.localStorage.setItem(GITHUB_TOKEN_KEY, token.trim());
+  }
+
+  window.localStorage.setItem(BLOG_OWNER_KEY, "true");
   window.dispatchEvent(new Event("portfolio-owner-updated"));
-  return false;
+  return true;
 }
 
 export function logoutOwner() {
@@ -170,11 +162,7 @@ export function formatDate(value: string) {
 
 export function readFileAsDataURL(file?: File) {
   return new Promise<string>((resolve, reject) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-
+    if (!file) { resolve(""); return; }
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
     reader.onerror = () => reject(reader.error);
@@ -184,11 +172,7 @@ export function readFileAsDataURL(file?: File) {
 
 export function readImageAsCompressedDataURL(file?: File, maxWidth = 1400, quality = 0.82) {
   return new Promise<string>((resolve, reject) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-
+    if (!file) { resolve(""); return; }
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
@@ -198,10 +182,7 @@ export function readImageAsCompressedDataURL(file?: File, maxWidth = 1400, quali
         canvas.width = Math.round(image.width * scale);
         canvas.height = Math.round(image.height * scale);
         const context = canvas.getContext("2d");
-        if (!context) {
-          reject(new Error("Could not prepare image."));
-          return;
-        }
+        if (!context) { reject(new Error("Could not prepare image.")); return; }
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
         resolve(canvas.toDataURL("image/jpeg", quality));
       };

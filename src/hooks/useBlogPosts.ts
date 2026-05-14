@@ -15,11 +15,9 @@ export function useBlogPosts() {
     };
 
     void sync();
-    window.addEventListener("storage", sync);
     window.addEventListener("portfolio-posts-updated", sync);
     return () => {
       active = false;
-      window.removeEventListener("storage", sync);
       window.removeEventListener("portfolio-posts-updated", sync);
     };
   }, []);
