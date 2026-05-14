@@ -5,13 +5,14 @@ import { useBlogPosts } from "./hooks/useBlogPosts";
 import { useOwner } from "./hooks/useOwner";
 import {
   createExcerpt,
+  deletePostById,
   formatDate,
   getPostsAsync,
   logoutOwner,
   readFileAsDataURL,
   readImageAsCompressedDataURL,
   requestOwnerAccess,
-  savePosts,
+  savePost,
   type BlogPost
 } from "./lib/blog";
 import { navigate, navigateTo, normalisePath } from "./lib/router";
@@ -215,7 +216,7 @@ function BlogPage() {
 
   const deletePost = (id: string) => {
     if (!window.confirm("Delete this post?")) return;
-    void getPostsAsync(true).then((posts) => savePosts(posts.filter((post) => post.id !== id)));
+    void deletePostById(id);
   };
   const editPost = (id: string) => navigate(`/edit/${encodeURIComponent(id)}`);
 
@@ -922,8 +923,7 @@ function NewPostPage({ editId }: { editId?: string }) {
       media: videoData ? { type: "video", url: videoData } : embed ? { type: "embed", url: embed } : imageData ? { type: "image", url: imageData } : loadedPost?.media,
       date: loadedPost?.date ?? new Date().toISOString()
     };
-    const posts = (await getPostsAsync(true)).filter(p => p.id !== "welcome-blog" && p.id !== post.id);
-    try { await savePosts([post, ...posts]); navigate("/blog"); }
+    try { await savePost(post); navigate("/blog"); }
     catch (err) { setEditorError(err instanceof Error ? err.message : "Failed to save post to GitHub. Check your token and try again."); }
   };
 

@@ -74,44 +74,40 @@ function fromBase64(str: string): string {
 export async function getPostsAsync(forceFresh = false): Promise<BlogPost[]> {
   if (!forceFresh && memoryPosts && Date.now() - memorySavedAt < POSTS_CACHE_MS) return memoryPosts;
   try {
-    const response = await fetch(`${API_URL}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, {
-      cache: "no-store",
-      headers: {
-        Accept: "application/vnd.github+json"
-      }
-    });
-    if (!response.ok) return memoryPosts ?? samplePosts;
-    const { content } = await response.json() as { content: string };
-    const posts = JSON.parse(fromBase64(content)) as BlogPost[];
+    const { posts } = await fetchRemotePosts();
     const result = Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
     memoryPosts = result;
+    memorySavedAt = Date.now();
     return result;
   } catch {
     return memoryPosts ?? samplePosts;
   }
 }
 
-export async function savePosts(posts: BlogPost[]): Promise<void> {
-  const token = window.localStorage.getItem(GITHUB_TOKEN_KEY);
-  if (!token) throw new Error("No GitHub token stored. Log out and log in again to enter your token.");
-
-  const shaResponse = await fetch(API_URL, {
+async function fetchRemotePosts(token?: string): Promise<{ posts: BlogPost[]; sha: string }> {
+  const response = await fetch(`${API_URL}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, {
+    cache: "no-store",
     headers: {
-      Authorization: `Bearer ${token}`,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       Accept: "application/vnd.github+json"
     }
   });
 
-  if (shaResponse.status === 401) {
+  if (response.status === 401) {
     window.localStorage.removeItem(GITHUB_TOKEN_KEY);
     throw new Error("GitHub token rejected (401). Log out and log in again to re-enter your token.");
   }
 
-  if (!shaResponse.ok) {
-    throw new Error(`GitHub API error fetching file info: ${shaResponse.status}`);
+  if (!response.ok) {
+    throw new Error(`GitHub API error fetching posts: ${response.status}`);
   }
 
-  const { sha } = await shaResponse.json() as { sha: string };
+  const { content, sha } = await response.json() as { content: string; sha: string };
+  const posts = JSON.parse(fromBase64(content)) as BlogPost[];
+  return { posts: Array.isArray(posts) ? posts : [], sha };
+}
+
+async function writePosts(posts: BlogPost[], sha: string, token: string): Promise<void> {
   const content = toBase64(JSON.stringify(posts, null, 2));
 
   const putResponse = await fetch(API_URL, {
@@ -137,6 +133,31 @@ export async function savePosts(posts: BlogPost[]): Promise<void> {
   memoryPosts = posts;
   memorySavedAt = Date.now();
   window.dispatchEvent(new CustomEvent("portfolio-posts-updated", { detail: posts }));
+}
+
+export async function savePost(post: BlogPost): Promise<void> {
+  const token = window.localStorage.getItem(GITHUB_TOKEN_KEY);
+  if (!token) throw new Error("No GitHub token stored. Log out and log in again to enter your token.");
+
+  const { posts, sha } = await fetchRemotePosts(token);
+  const nextPosts = [post, ...posts.filter((item) => item.id !== post.id && item.id !== "welcome-blog")];
+  await writePosts(nextPosts, sha, token);
+}
+
+export async function deletePostById(id: string): Promise<void> {
+  const token = window.localStorage.getItem(GITHUB_TOKEN_KEY);
+  if (!token) throw new Error("No GitHub token stored. Log out and log in again to enter your token.");
+
+  const { posts, sha } = await fetchRemotePosts(token);
+  const nextPosts = posts.filter((post) => post.id !== id);
+  await writePosts(nextPosts, sha, token);
+}
+
+export async function savePosts(posts: BlogPost[]): Promise<void> {
+  const token = window.localStorage.getItem(GITHUB_TOKEN_KEY);
+  if (!token) throw new Error("No GitHub token stored. Log out and log in again to enter your token.");
+  const { sha } = await fetchRemotePosts(token);
+  await writePosts(posts, sha, token);
 }
 
 export function isOwner() {
