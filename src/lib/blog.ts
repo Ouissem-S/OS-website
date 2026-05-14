@@ -21,6 +21,8 @@ const POSTS_PATH       = "posts/posts.json";
 const RAW_URL          = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${POSTS_PATH}`;
 const API_URL          = `https://api.github.com/repos/${GITHUB_REPO}/contents/${POSTS_PATH}`;
 
+let memoryPosts: BlogPost[] | null = null;
+
 export const samplePosts: BlogPost[] = [
   {
     id: "ai-robotics-physical-world",
@@ -50,7 +52,7 @@ For me, this is the kind of AI progress worth watching: not just models that can
 ];
 
 export function getPosts(): BlogPost[] {
-  return samplePosts;
+  return memoryPosts ?? samplePosts;
 }
 
 function toBase64(str: string): string {
@@ -60,11 +62,13 @@ function toBase64(str: string): string {
 export async function getPostsAsync(): Promise<BlogPost[]> {
   try {
     const response = await fetch(`${RAW_URL}?t=${Date.now()}`);
-    if (!response.ok) return samplePosts;
+    if (!response.ok) return memoryPosts ?? samplePosts;
     const posts = await response.json() as BlogPost[];
-    return Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
+    const result = Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
+    memoryPosts = result;
+    return result;
   } catch {
-    return samplePosts;
+    return memoryPosts ?? samplePosts;
   }
 }
 
@@ -111,6 +115,7 @@ export async function savePosts(posts: BlogPost[]): Promise<void> {
     throw new Error(`GitHub API error saving posts (${putResponse.status}): ${text}`);
   }
 
+  memoryPosts = posts;
   window.dispatchEvent(new CustomEvent("portfolio-posts-updated", { detail: posts }));
 }
 
