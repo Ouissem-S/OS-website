@@ -86,3 +86,38 @@ window.addEventListener("load", () => {
     }
     requestAnimationFrame(step);
 });
+
+// Cursor glow, soft tilt cards, and click feedback for a livelier portfolio.
+window.addEventListener("load", () => {
+    const interactivePanels = document.querySelectorAll(".hero-panel, .dashboard-panel, .blog-hero, .editor-card, .post-view");
+
+    document.addEventListener("pointermove", event => {
+        document.body.style.setProperty("--cursor-x", `${event.clientX}px`);
+        document.body.style.setProperty("--cursor-y", `${event.clientY}px`);
+    });
+
+    interactivePanels.forEach(panel => {
+        panel.addEventListener("pointermove", event => {
+            const rect = panel.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            panel.style.setProperty("--tilt-x", `${x * 5}deg`);
+            panel.style.setProperty("--tilt-y", `${y * -5}deg`);
+        });
+
+        panel.addEventListener("pointerleave", () => {
+            panel.style.setProperty("--tilt-x", "0deg");
+            panel.style.setProperty("--tilt-y", "0deg");
+        });
+    });
+
+    document.addEventListener("click", event => {
+        const spark = document.createElement("span");
+        spark.className = "click-spark";
+        spark.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
+        spark.style.left = `${event.clientX}px`;
+        spark.style.top = `${event.clientY}px`;
+        document.body.appendChild(spark);
+        spark.addEventListener("animationend", () => spark.remove());
+    });
+});
