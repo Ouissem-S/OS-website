@@ -60,10 +60,7 @@ function toBase64(str: string): string {
 
 export async function getPostsAsync(): Promise<BlogPost[]> {
   try {
-    const response = await fetch(API_URL, {
-      cache: "no-store",
-      headers: { Accept: "application/vnd.github+json" }
-    });
+    const response = await fetch(API_URL);
     if (!response.ok) return memoryPosts ?? samplePosts;
     const { content } = await response.json() as { content: string };
     const posts = JSON.parse(atob(content.replace(/\n/g, ""))) as BlogPost[];
