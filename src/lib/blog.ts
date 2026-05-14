@@ -102,8 +102,24 @@ async function fetchRemotePosts(token?: string): Promise<{ posts: BlogPost[]; sh
     throw new Error(`GitHub API error fetching posts: ${response.status}`);
   }
 
-  const { content, sha } = await response.json() as { content: string; sha: string };
-  const posts = JSON.parse(fromBase64(content)) as BlogPost[];
+  const { content, download_url: downloadUrl, sha } = await response.json() as {
+    content?: string;
+    download_url?: string;
+    sha: string;
+  };
+  let rawJson = "";
+
+  if (content?.trim()) {
+    rawJson = fromBase64(content);
+  } else if (downloadUrl) {
+    const rawResponse = await fetch(`${downloadUrl}?t=${Date.now()}`, { cache: "no-store" });
+    if (!rawResponse.ok) throw new Error(`GitHub raw posts error: ${rawResponse.status}`);
+    rawJson = await rawResponse.text();
+  }
+
+  if (!rawJson.trim()) return { posts: [], sha };
+
+  const posts = JSON.parse(rawJson) as BlogPost[];
   return { posts: Array.isArray(posts) ? posts : [], sha };
 }
 
