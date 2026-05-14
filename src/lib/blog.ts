@@ -27,7 +27,7 @@ export const samplePosts: BlogPost[] = [
     excerpt:
       "Recent robotics news shows AI moving beyond screens and into machines that can learn, move, and act in real spaces.",
     category: "AI + Robotics",
-    image: "/gabriele-malaspina-CjWsslYVnPI-unsplash.jpg",
+    image: `${import.meta.env.BASE_URL}gabriele-malaspina-CjWsslYVnPI-unsplash.jpg`,
     content: `## Why this caught my attention
 A lot of AI news still focuses on chatbots, image generators, and software agents. But one of the most interesting shifts happening right now is that AI is starting to move into the physical world.
 
