@@ -21,6 +21,7 @@ const POSTS_PATH       = "posts/posts.json";
 const API_URL          = `https://api.github.com/repos/${GITHUB_REPO}/contents/${POSTS_PATH}`;
 
 let memoryPosts: BlogPost[] | null = null;
+let memorySavedAt = 0;
 
 export const samplePosts: BlogPost[] = [
   {
@@ -59,6 +60,7 @@ function toBase64(str: string): string {
 }
 
 export async function getPostsAsync(): Promise<BlogPost[]> {
+  if (memoryPosts && Date.now() - memorySavedAt < 70_000) return memoryPosts;
   try {
     const response = await fetch(API_URL);
     if (!response.ok) return memoryPosts ?? samplePosts;
@@ -116,6 +118,7 @@ export async function savePosts(posts: BlogPost[]): Promise<void> {
   }
 
   memoryPosts = posts;
+  memorySavedAt = Date.now();
   window.dispatchEvent(new CustomEvent("portfolio-posts-updated", { detail: posts }));
 }
 
