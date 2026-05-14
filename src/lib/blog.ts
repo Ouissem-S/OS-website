@@ -19,6 +19,7 @@ const GITHUB_REPO      = "Ouissem-S/OS-website";
 const GITHUB_BRANCH    = "main";
 const POSTS_PATH       = "posts/posts.json";
 const API_URL          = `https://api.github.com/repos/${GITHUB_REPO}/contents/${POSTS_PATH}`;
+const RAW_POSTS_URL    = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${POSTS_PATH}`;
 const POSTS_CACHE_MS   = 5_000;
 
 let memoryPosts: BlogPost[] | null = null;
@@ -74,7 +75,7 @@ function fromBase64(str: string): string {
 export async function getPostsAsync(forceFresh = false): Promise<BlogPost[]> {
   if (!forceFresh && memoryPosts && Date.now() - memorySavedAt < POSTS_CACHE_MS) return memoryPosts;
   try {
-    const { posts } = await fetchRemotePosts();
+    const posts = await fetchRawPosts();
     const result = Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
     memoryPosts = result;
     memorySavedAt = Date.now();
@@ -82,6 +83,13 @@ export async function getPostsAsync(forceFresh = false): Promise<BlogPost[]> {
   } catch {
     return memoryPosts ?? samplePosts;
   }
+}
+
+async function fetchRawPosts(): Promise<BlogPost[]> {
+  const response = await fetch(`${RAW_POSTS_URL}?t=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`GitHub raw posts error: ${response.status}`);
+  const posts = JSON.parse(await response.text()) as BlogPost[];
+  return Array.isArray(posts) ? posts : [];
 }
 
 async function fetchRemotePosts(token?: string): Promise<{ posts: BlogPost[]; sha: string }> {
