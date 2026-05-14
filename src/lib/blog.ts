@@ -19,6 +19,7 @@ const GITHUB_REPO      = "Ouissem-S/OS-website";
 const GITHUB_BRANCH    = "main";
 const POSTS_PATH       = "posts/posts.json";
 const API_URL          = `https://api.github.com/repos/${GITHUB_REPO}/contents/${POSTS_PATH}`;
+const POSTS_CACHE_MS   = 5_000;
 
 let memoryPosts: BlogPost[] | null = null;
 let memorySavedAt = 0;
@@ -56,16 +57,32 @@ export function getPosts(): BlogPost[] {
 }
 
 function toBase64(str: string): string {
-  return btoa(unescape(encodeURIComponent(str)));
+  const bytes = new TextEncoder().encode(str);
+  let binary = "";
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return btoa(binary);
 }
 
-export async function getPostsAsync(): Promise<BlogPost[]> {
-  if (memoryPosts && Date.now() - memorySavedAt < 70_000) return memoryPosts;
+function fromBase64(str: string): string {
+  const binary = atob(str.replace(/\n/g, ""));
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
+export async function getPostsAsync(forceFresh = false): Promise<BlogPost[]> {
+  if (!forceFresh && memoryPosts && Date.now() - memorySavedAt < POSTS_CACHE_MS) return memoryPosts;
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(`${API_URL}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, {
+      cache: "no-store",
+      headers: {
+        Accept: "application/vnd.github+json"
+      }
+    });
     if (!response.ok) return memoryPosts ?? samplePosts;
     const { content } = await response.json() as { content: string };
-    const posts = JSON.parse(atob(content.replace(/\n/g, ""))) as BlogPost[];
+    const posts = JSON.parse(fromBase64(content)) as BlogPost[];
     const result = Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
     memoryPosts = result;
     return result;
