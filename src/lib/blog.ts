@@ -18,7 +18,6 @@ const GITHUB_TOKEN_KEY = "portfolio_github_token";
 const GITHUB_REPO      = "Ouissem-S/OS-website";
 const GITHUB_BRANCH    = "main";
 const POSTS_PATH       = "posts/posts.json";
-const RAW_URL          = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${POSTS_PATH}`;
 const API_URL          = `https://api.github.com/repos/${GITHUB_REPO}/contents/${POSTS_PATH}`;
 
 let memoryPosts: BlogPost[] | null = null;
@@ -61,9 +60,12 @@ function toBase64(str: string): string {
 
 export async function getPostsAsync(): Promise<BlogPost[]> {
   try {
-    const response = await fetch(`${RAW_URL}?t=${Date.now()}`);
+    const response = await fetch(API_URL, {
+      headers: { Accept: "application/vnd.github+json", "Cache-Control": "no-cache" }
+    });
     if (!response.ok) return memoryPosts ?? samplePosts;
-    const posts = await response.json() as BlogPost[];
+    const { content } = await response.json() as { content: string };
+    const posts = JSON.parse(atob(content.replace(/\n/g, ""))) as BlogPost[];
     const result = Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
     memoryPosts = result;
     return result;
