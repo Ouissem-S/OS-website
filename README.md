@@ -1,33 +1,34 @@
-# 🌐 Personal Portfolio Website
+# Ouissem Portfolio
 
-This is my web portfolio built using **HTML**, **CSS**, and **JavaScript** to showcase my work, skills, and current projects.  
-It is still in progress as I continue to grow my experience and improve the design.
+Personal portfolio and blog rebuilt with React, TypeScript, and Vite.
 
----
+## Features
 
-## ✨ Features
+- React single-page app with Home, About, Blog, New Post, and Post views
+- TypeScript blog storage utilities using `localStorage`
+- Owner-only post creation flow
+- Interactive neural-network background, panel tilt, and click feedback
+- Browser-safe profile image served from `public/profile.png`
 
-- Responsive design for desktop and mobile
-- Projects section including academic + personal work
-- Contact information and links to professional profiles
-- Clean and simple navigation
-- Deployed using **GitHub Pages**
+## Run Locally
 
----
+Install Node.js first, then run:
 
-## 🚀 Live Demo
+```bash
+npm install
+npm run dev
+```
 
-🔗 View the portfolio here:  
+Open the Vite URL, usually:
 
----
+```text
+http://127.0.0.1:5173/
+```
 
-## 🛠️ Technologies Used
+## Build
 
-| Purpose | Tools |
-|--------|------|
-| Structure | HTML5 |
-| Styling | CSS3 |
-| Interactivity | JavaScript |
-| Deployment | GitHub Pages |
+```bash
+npm run build
+```
 
----
+The production build will be created in `dist/`.
