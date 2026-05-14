@@ -71,7 +71,7 @@ function HomePage() {
 
           <figure className="hero-portrait" aria-label="Ouissem Salag">
             <span className="portrait-arch" />
-            <img src="/profile.png" alt="Ouissem Salag" />
+            <img src={`${import.meta.env.BASE_URL}profile.png`} alt="Ouissem Salag" />
           </figure>
         </div>
       </section>
