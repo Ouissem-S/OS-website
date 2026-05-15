@@ -24,6 +24,10 @@ function dateInputValue(value?: string) {
   return date.toISOString().slice(0, 10);
 }
 
+function createPostId() {
+  return `post-${Date.now().toString(36).slice(-7)}`;
+}
+
 function useRoute() {
   const [route, setRoute] = useState(() => normalisePath(window.location.pathname));
 
@@ -926,7 +930,7 @@ function NewPostPage({ editId }: { editId?: string }) {
     const videoData = await readFileAsDataURL(coverVideo);
     const embed = youtubeEmbedUrl(embedUrl);
     const post: BlogPost = {
-      id: loadedPost?.id ?? `${Date.now()}-${cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`,
+      id: loadedPost?.id ?? createPostId(),
       title: cleanTitle, category: category.trim(),
       excerpt: excerpt.trim() || createExcerpt(cleanContent),
       content: cleanContent,
@@ -1055,7 +1059,7 @@ function ViewPostPage({ id }: { id: string }) {
   const posts = useBlogPosts();
   const [freshPosts, setFreshPosts] = useState<BlogPost[] | null>(null);
   const [checkedPosts, setCheckedPosts] = useState(false);
-  const post = useMemo(() => (freshPosts ?? posts).find((item) => item.id === id), [freshPosts, id, posts]);
+  const post = useMemo(() => (freshPosts ?? posts).find((item) => item.id === id || item.legacyId === id), [freshPosts, id, posts]);
 
   useEffect(() => {
     let active = true;

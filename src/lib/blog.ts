@@ -5,6 +5,7 @@ export type BlogPost = {
   content: string;
   date: string;
   location?: string;
+  legacyId?: string;
   category?: string;
   image?: string;
   media?: {
