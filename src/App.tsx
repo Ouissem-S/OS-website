@@ -17,6 +17,13 @@ import {
 } from "./lib/blog";
 import { navigate, navigateTo, normalisePath } from "./lib/router";
 
+function dateInputValue(value?: string) {
+  if (!value) return new Date().toISOString().slice(0, 10);
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value.slice(0, 10);
+  return date.toISOString().slice(0, 10);
+}
+
 function useRoute() {
   const [route, setRoute] = useState(() => normalisePath(window.location.pathname));
 
@@ -694,6 +701,8 @@ function NewPostPage({ editId }: { editId?: string }) {
   const [loadedPost, setLoadedPost] = useState<BlogPost | undefined>();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("AI + Robotics");
+  const [publishDate, setPublishDate] = useState(() => dateInputValue());
+  const [location, setLocation] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [blocks, setBlocks] = useState<EditorBlock[]>([{ id: uid(), type: "text", content: "" }]);
   const [coverImage, setCoverImage] = useState<File | undefined>();
@@ -735,6 +744,8 @@ function NewPostPage({ editId }: { editId?: string }) {
     if (!loadedPost) return;
     setTitle(loadedPost.title);
     setCategory(loadedPost.category || "AI + Robotics");
+    setPublishDate(dateInputValue(loadedPost.date));
+    setLocation(loadedPost.location || "");
     setExcerpt(loadedPost.excerpt);
     setBlocks(parseBlocks(loadedPost.content));
     setCoverPreview(loadedPost.image || "");
@@ -921,7 +932,8 @@ function NewPostPage({ editId }: { editId?: string }) {
       content: cleanContent,
       image: imageData || loadedPost?.image || "",
       media: videoData ? { type: "video", url: videoData } : embed ? { type: "embed", url: embed } : imageData ? { type: "image", url: imageData } : loadedPost?.media,
-      date: loadedPost?.date ?? new Date().toISOString()
+      date: publishDate || dateInputValue(loadedPost?.date),
+      location: location.trim() || undefined
     };
     try { await savePost(post); navigate("/blog"); }
     catch (err) { setEditorError(err instanceof Error ? err.message : "Failed to save post to GitHub. Check your token and try again."); }
@@ -953,6 +965,14 @@ function NewPostPage({ editId }: { editId?: string }) {
             <label><span>Category</span>
               <input value={category} onChange={(e) => setCategory(e.target.value)} />
             </label>
+            <div className="media-field-grid">
+              <label><span>Publish date</span>
+                <input type="date" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} />
+              </label>
+              <label><span>Location</span>
+                <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Nottingham, UK" />
+              </label>
+            </div>
             <label><span>Excerpt</span>
               <input value={excerpt} onChange={(e) => setExcerpt(e.target.value)} />
             </label>
@@ -1041,10 +1061,10 @@ function ViewPostPage({ id }: { id: string }) {
       <main className="page-shell narrow" role="main">
         {post ? (
           <article className="post-view">
-            <p className="eyebrow">
-              {post.category ? `${post.category} • ` : ""}
-              {formatDate(post.date)}
-            </p>
+            <div className="post-view__topline">
+              <p className="eyebrow">{post.category}</p>
+              <p className="post-view__meta">{[post.location, formatDate(post.date)].filter(Boolean).join(" • ")}</p>
+            </div>
             <h1>{post.title}</h1>
             {renderPostMedia(post)}
             <div className="post-view__content">

@@ -4,6 +4,7 @@ export type BlogPost = {
   excerpt: string;
   content: string;
   date: string;
+  location?: string;
   category?: string;
   image?: string;
   media?: {
@@ -18,9 +19,11 @@ const GITHUB_TOKEN_KEY = "portfolio_github_token";
 const GITHUB_REPO      = "Ouissem-S/OS-website";
 const GITHUB_BRANCH    = "main";
 const POSTS_PATH       = "posts/posts.json";
+const MEDIA_DIR        = "public/blog-media";
 const API_URL          = `https://api.github.com/repos/${GITHUB_REPO}/contents/${POSTS_PATH}`;
 const RAW_POSTS_URL    = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${POSTS_PATH}`;
 const POSTS_CACHE_MS   = 5_000;
+const PUBLIC_BASE      = import.meta.env.BASE_URL;
 
 let memoryPosts: BlogPost[] | null = null;
 let memorySavedAt = 0;
@@ -159,12 +162,98 @@ async function writePosts(posts: BlogPost[], sha: string, token: string): Promis
   window.dispatchEvent(new CustomEvent("portfolio-posts-updated", { detail: posts }));
 }
 
+function dataUrlParts(value?: string) {
+  const match = value?.match(/^data:([^;,]+);base64,([\s\S]+)$/);
+  if (!match) return null;
+  const mime = match[1];
+  const extension =
+    mime === "image/jpeg" ? "jpg" :
+    mime === "image/png" ? "png" :
+    mime === "image/webp" ? "webp" :
+    mime === "image/gif" ? "gif" :
+    mime === "video/mp4" ? "mp4" :
+    mime === "video/webm" ? "webm" :
+    mime === "video/quicktime" ? "mov" : "bin";
+
+  return { mime, extension, content: match[2] };
+}
+
+async function uploadDataUrl(dataUrl: string, token: string, postId: string, label: string) {
+  const parts = dataUrlParts(dataUrl);
+  if (!parts) return dataUrl;
+
+  const safePostId = postId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "post";
+  const safeLabel = label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "media";
+  const fileName = `${safePostId}-${safeLabel}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${parts.extension}`;
+  const path = `${MEDIA_DIR}/${fileName}`;
+
+  const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: `Upload blog media ${fileName}`,
+      content: parts.content,
+      branch: GITHUB_BRANCH
+    })
+  });
+
+  if (response.status === 401) {
+    window.localStorage.removeItem(GITHUB_TOKEN_KEY);
+    throw new Error("GitHub token rejected (401). Log out and log in again to re-enter your token.");
+  }
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`GitHub API error uploading media (${response.status}): ${text}`);
+  }
+
+  return `${PUBLIC_BASE}blog-media/${fileName}`;
+}
+
+async function replaceInlineDataUrls(content: string, token: string, postId: string) {
+  const imagePattern = /!\[([^\]]*)\]\((data:[^)]+)\)/g;
+  const replacements: Array<{ original: string; next: string }> = [];
+  let match: RegExpExecArray | null;
+  let index = 0;
+
+  while ((match = imagePattern.exec(content)) !== null) {
+    const url = await uploadDataUrl(match[2], token, postId, `inline-${index}`);
+    replacements.push({ original: match[0], next: `![${match[1]}](${url})` });
+    index += 1;
+  }
+
+  return replacements.reduce((nextContent, item) => nextContent.replace(item.original, item.next), content);
+}
+
+async function externalisePostMedia(post: BlogPost, token: string) {
+  const nextPost: BlogPost = { ...post };
+
+  if (dataUrlParts(nextPost.image)) {
+    nextPost.image = await uploadDataUrl(nextPost.image || "", token, post.id, "cover");
+  }
+
+  if (nextPost.media && dataUrlParts(nextPost.media.url)) {
+    nextPost.media = {
+      ...nextPost.media,
+      url: await uploadDataUrl(nextPost.media.url, token, post.id, nextPost.media.type)
+    };
+  }
+
+  nextPost.content = await replaceInlineDataUrls(nextPost.content, token, post.id);
+  return nextPost;
+}
+
 export async function savePost(post: BlogPost): Promise<void> {
   const token = window.localStorage.getItem(GITHUB_TOKEN_KEY);
   if (!token) throw new Error("No GitHub token stored. Log out and log in again to enter your token.");
 
   const { posts, sha } = await fetchRemotePosts(token);
-  const nextPosts = [post, ...posts.filter((item) => item.id !== post.id && item.id !== "welcome-blog")];
+  const cleanPost = await externalisePostMedia(post, token);
+  const nextPosts = [cleanPost, ...posts.filter((item) => item.id !== post.id && item.id !== "welcome-blog")];
   await writePosts(nextPosts, sha, token);
 }
 

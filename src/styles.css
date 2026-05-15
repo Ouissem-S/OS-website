@@ -540,10 +540,32 @@ textarea {
     line-height: 1.6;
 }
 
-.post-card__meta {
+.post-card__topline,
+.post-view__topline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.post-card__category,
+.post-card__meta,
+.post-view__meta {
     color: var(--accent);
     font-size: 0.82rem;
     font-weight: 700;
+}
+
+.post-card__category {
+    min-width: 0;
+}
+
+.post-card__meta,
+.post-view__meta {
+    margin: 0;
+    max-width: 58%;
+    color: var(--muted);
+    text-align: right;
 }
 
 .post-card__footer {
