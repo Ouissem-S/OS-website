@@ -12,6 +12,7 @@ export function PostCard({ post, onDelete, onEdit }: PostCardProps) {
   const href = `#${path}`;
   const mediaType = post.media?.type;
   const showMediaChip = mediaType === "video" || mediaType === "embed";
+  const postMeta = [post.location, formatDate(post.date)].filter(Boolean).join(" • ");
 
   return (
     <article className="post-card">
@@ -20,9 +21,9 @@ export function PostCard({ post, onDelete, onEdit }: PostCardProps) {
         {showMediaChip ? <span className="media-chip">{mediaType === "embed" ? "video" : mediaType}</span> : null}
       </a>
       <div className="post-card__body">
-        <div className="post-card__meta">
-          {post.category ? `${post.category} • ` : ""}
-          {formatDate(post.date)}
+        <div className="post-card__topline">
+          <div className="post-card__category">{post.category}</div>
+          <div className="post-card__meta">{postMeta}</div>
         </div>
         <h3>
           <a href={href} onClick={navigateTo(path)}>
