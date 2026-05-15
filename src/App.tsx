@@ -1053,7 +1053,23 @@ function NewPostPage({ editId }: { editId?: string }) {
 
 function ViewPostPage({ id }: { id: string }) {
   const posts = useBlogPosts();
-  const post = useMemo(() => posts.find((item) => item.id === id), [id, posts]);
+  const [freshPosts, setFreshPosts] = useState<BlogPost[] | null>(null);
+  const [checkedPosts, setCheckedPosts] = useState(false);
+  const post = useMemo(() => (freshPosts ?? posts).find((item) => item.id === id), [freshPosts, id, posts]);
+
+  useEffect(() => {
+    let active = true;
+    setFreshPosts(null);
+    setCheckedPosts(false);
+    void getPostsAsync().then((updatedPosts) => {
+      if (!active) return;
+      setFreshPosts(updatedPosts);
+      setCheckedPosts(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, [id]);
 
   return (
     <>
@@ -1074,13 +1090,18 @@ function ViewPostPage({ id }: { id: string }) {
               Back to blog
             </a>
           </article>
-        ) : (
+        ) : checkedPosts ? (
           <section className="editor-card">
             <h1>Post not found</h1>
             <p>This post may have been deleted or the link may be incorrect.</p>
             <a className="primary-button" href="#/blog" onClick={navigateTo("/blog")}>
               Back to blog
             </a>
+          </section>
+        ) : (
+          <section className="editor-card">
+            <p className="eyebrow">Loading post</p>
+            <h1>Opening post...</h1>
           </section>
         )}
       </main>
