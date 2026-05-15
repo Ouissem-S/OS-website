@@ -1,6 +1,7 @@
 [
   {
-    "id": "1778794768669-real-time-data-sensor-calibration-university-of-nottingham-school-of-computer-science",
+    "id": "rtsc",
+    "legacyId": "1778794768669-real-time-data-sensor-calibration-university-of-nottingham-school-of-computer-science",
     "title": "Real-time Data Sensor Calibration | University of Nottingham - School of Computer Science",
     "category": "Real-time Systems + HCI + Software Engineering",
     "excerpt": "A second-year Software Engineering group project carried out throughout the full academic year 25/26, supervised by Lucas Fonseca.",
