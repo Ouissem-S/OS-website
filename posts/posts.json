@@ -1,14 +1,5 @@
 [
   {
-    "id": "ai-robotics-physical-world",
-    "title": "AI Is Starting to Move Into the Physical World",
-    "category": "AI + Robotics",
-    "excerpt": "Recent robotics news shows AI moving beyond screens and into machines that can learn, move, and act in real spaces.",
-    "content": "## Why this caught my attention\nA lot of AI news still focuses on chatbots, image generators, and software agents. But one of the most interesting shifts happening right now is that AI is starting to move into the physical world.\n\n---\n\n## From language to action\nRecent robotics news makes that clear. Meta has acquired a humanoid robotics startup to strengthen its work on AI for robots, while Boston Dynamics is working with Google DeepMind on the next generation of Atlas. The interesting part is not only the hardware. It is the idea that robots may need foundation models of their own: systems trained to understand movement, objects, space, and physical interaction.\n\n> Intelligence becomes more than prediction. It becomes action.\n\nThat changes how I think about AI. A chatbot can be wrong and correct itself in text, but a robot acting in the real world has to deal with gravity, friction, timing, safety, and uncertainty. Intelligence becomes more than prediction. It becomes action.\n\n## Why robotics feels exciting\nThis is why robotics feels like one of the most exciting areas of AI. It combines perception, language, control, planning, and real-world feedback. It also shows how difficult \"general intelligence\" really is. Understanding a sentence is one challenge. Understanding how to pick up a fragile object, navigate a room, or work safely near people is another.\n\nFor me, this is the kind of AI progress worth watching: not just models that can answer questions, but systems that can eventually help in homes, hospitals, factories, and everyday environments.",
-    "image": "/OS-website/gabriele-malaspina-CjWsslYVnPI-unsplash.jpg",
-    "date": "2026-02-07"
-  },
-  {
     "id": "1778794768669-real-time-data-sensor-calibration-university-of-nottingham-school-of-computer-science",
     "title": "Real-time Data Sensor Calibration | University of Nottingham - School of Computer Science",
     "category": "Real-time Systems + HCI + Software Engineering",
@@ -19,6 +10,16 @@
       "type": "image",
       "url": "/OS-website/blog-media/1778794768669-real-time-data-sensor-calibration-university-of-nottingham-school-of-computer-science-image-1778827608163-o8gkjy.jpg"
     },
-    "date": "2026-05-13"
+    "date": "2026-05-13",
+    "location": "Nottingham, UK"
+  },
+  {
+    "id": "ai-robotics-physical-world",
+    "title": "AI Is Starting to Move Into the Physical World",
+    "category": "AI + Robotics",
+    "excerpt": "Recent robotics news shows AI moving beyond screens and into machines that can learn, move, and act in real spaces.",
+    "content": "## Why this caught my attention\nA lot of AI news still focuses on chatbots, image generators, and software agents. But one of the most interesting shifts happening right now is that AI is starting to move into the physical world.\n\n---\n\n## From language to action\nRecent robotics news makes that clear. Meta has acquired a humanoid robotics startup to strengthen its work on AI for robots, while Boston Dynamics is working with Google DeepMind on the next generation of Atlas. The interesting part is not only the hardware. It is the idea that robots may need foundation models of their own: systems trained to understand movement, objects, space, and physical interaction.\n\n> Intelligence becomes more than prediction. It becomes action.\n\nThat changes how I think about AI. A chatbot can be wrong and correct itself in text, but a robot acting in the real world has to deal with gravity, friction, timing, safety, and uncertainty. Intelligence becomes more than prediction. It becomes action.\n\n## Why robotics feels exciting\nThis is why robotics feels like one of the most exciting areas of AI. It combines perception, language, control, planning, and real-world feedback. It also shows how difficult \"general intelligence\" really is. Understanding a sentence is one challenge. Understanding how to pick up a fragile object, navigate a room, or work safely near people is another.\n\nFor me, this is the kind of AI progress worth watching: not just models that can answer questions, but systems that can eventually help in homes, hospitals, factories, and everyday environments.",
+    "image": "/OS-website/gabriele-malaspina-CjWsslYVnPI-unsplash.jpg",
+    "date": "2026-02-07"
   }
 ]
