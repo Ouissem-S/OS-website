@@ -1,4 +1,10 @@
-const icons = {
+import { useEffect, useState } from "react";
+import { GITHUB_PROFILE_URL } from "../config";
+
+export const CONTACT_EMAIL = "ouissemsalag@gmail.com";
+export const LINKEDIN_URL = "https://www.linkedin.com/in/ouissem-salag/";
+
+export const contactIcons = {
   linkedin: (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M6.94 8.98H3.72V20h3.22V8.98ZM7.2 5.58a1.86 1.86 0 1 0-3.72 0 1.86 1.86 0 0 0 3.72 0ZM20.52 13.68c0-3.12-1.66-4.96-4.26-4.96-1.62 0-2.62.9-3.02 1.54V8.98h-3.1V20h3.22v-5.46c0-1.44.28-2.84 2.06-2.84 1.76 0 1.78 1.64 1.78 2.94V20h3.22l.1-6.32Z" />
@@ -16,24 +22,58 @@ const icons = {
   )
 };
 
+async function copyText(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function ContactLinks() {
+  const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
+
+  useEffect(() => {
+    if (copied === "idle") return;
+    const id = window.setTimeout(() => setCopied("idle"), 2200);
+    return () => window.clearTimeout(id);
+  }, [copied]);
+
   return (
-    <div className="contact-grid">
-      <a href="https://www.linkedin.com/in/ouissem-salag/?trk=public-profile-join-page">
-        <i>{icons.linkedin}</i>
-        <span>LinkedIn</span>
-        <strong>Professional profile</strong>
+    <div className="contact-cards">
+      <a className="contact-card contact-card--linkedin" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
+        <i>{contactIcons.linkedin}</i>
+        <span>
+          <strong>LinkedIn</strong>
+          <small>Professional profile</small>
+        </span>
+        <b aria-hidden="true">↗</b>
       </a>
-      <a href="https://github.com/ouissemsalag">
-        <i>{icons.github}</i>
-        <span>GitHub</span>
-        <strong>Code and repositories</strong>
+      <a className="contact-card contact-card--github" href={GITHUB_PROFILE_URL} target="_blank" rel="noreferrer">
+        <i>{contactIcons.github}</i>
+        <span>
+          <strong>GitHub</strong>
+          <small>Code and repositories</small>
+        </span>
+        <b aria-hidden="true">↗</b>
       </a>
-      <a href="mailto:ouissemsalag@gmail.com">
-        <i>{icons.email}</i>
-        <span>Email</span>
-        <strong>ouissemsalag@gmail.com</strong>
-      </a>
+      <div className="contact-card contact-card--email">
+        <a href={`mailto:${CONTACT_EMAIL}`}>
+          <i>{contactIcons.email}</i>
+          <span>
+            <strong>Email</strong>
+            <small>{CONTACT_EMAIL}</small>
+          </span>
+        </a>
+        <button
+          type="button"
+          className={copied === "copied" ? "is-copied" : undefined}
+          onClick={() => void copyText(CONTACT_EMAIL).then((ok) => setCopied(ok ? "copied" : "failed"))}
+        >
+          {copied === "copied" ? "Copied! 💗" : copied === "failed" ? "Couldn't copy" : "Copy"}
+        </button>
+      </div>
     </div>
   );
 }

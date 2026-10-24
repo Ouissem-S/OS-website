@@ -34,22 +34,33 @@
     object-fit: contain;
 }
 
+/* Long-form reading: a comfortable ~65–70 character line, roomy spacing, softer text. */
 .post-view__content {
-    color: var(--ink);
-    line-height: 1.9;
-    margin: 24px 0;
-    font-size: 1.03rem;
+    max-width: 680px;
+    margin: 36px auto 12px;
+    color: var(--text-soft);
+    font-size: 1.08rem;
+    line-height: 1.75;
 }
 
 .post-view__content p {
-    margin: 0 0 1rem;
+    margin: 0 0 1.4rem;
+}
+
+.post-view__content strong {
+    color: var(--ink);
 }
 
 .post-view__content h2,
 .post-view__content h3 {
-    margin: 2rem 0 0.85rem;
+    margin: 3rem 0 1rem;
     color: #17171a;
-    line-height: 1.12;
+    line-height: 1.2;
+}
+
+.post-view__content > h2:first-child,
+.post-view__content > h3:first-child {
+    margin-top: 0;
 }
 
 .post-view__content h2 {
@@ -63,8 +74,8 @@
 .post-view__content hr {
     border: 0;
     height: 1px;
-    margin: 2rem 0;
-    background: linear-gradient(90deg, transparent, rgba(196, 63, 124, 0.36), transparent);
+    margin: 3rem 0;
+    background: linear-gradient(90deg, transparent, rgba(181, 87, 127, 0.36), transparent);
 }
 
 .post-view__content blockquote {
@@ -78,8 +89,9 @@
 }
 
 .post-view__content li {
-    margin: 0.45rem 0 0.45rem 1.2rem;
-    color: var(--ink);
+    margin: 0.6rem 0 0.6rem 0.4rem;
+    padding-left: 0.2rem;
+    color: var(--text-soft);
 }
 
 .post-table-wrap {

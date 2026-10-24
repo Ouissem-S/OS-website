@@ -58,7 +58,7 @@ export function NetworkCanvas() {
           const d = Math.hypot(dx, dy);
           if (d < maxLink) {
             const alpha = 1 - d / maxLink;
-            ctx.strokeStyle = `rgba(255, 143, 175, ${0.18 * alpha})`;
+            ctx.strokeStyle = `rgba(205, 140, 170, ${0.18 * alpha})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -69,7 +69,7 @@ export function NetworkCanvas() {
       }
 
       for (const node of nodes) {
-        ctx.fillStyle = "rgba(255, 95, 143, 0.9)";
+        ctx.fillStyle = "rgba(181, 110, 150, 0.9)";
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
         ctx.fill();

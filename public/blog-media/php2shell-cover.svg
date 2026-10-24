@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f9e6ec"/>
+      <stop offset="0.55" stop-color="#f1cbd8"/>
+      <stop offset="1" stop-color="#d9c4ef"/>
+    </linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e07a9b"/>
+      <stop offset="1" stop-color="#b5577f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#7e3a5c" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#bg)"/>
+  <circle cx="1080" cy="110" r="170" fill="#fff" opacity="0.28"/>
+  <circle cx="120" cy="660" r="200" fill="#fff" opacity="0.22"/>
+
+  <!-- code window -->
+  <g filter="url(#shadow)">
+    <rect x="110" y="120" width="560" height="380" rx="28" fill="#1f1d22"/>
+    <circle cx="150" cy="158" r="9" fill="#ff6b6b"/>
+    <circle cx="180" cy="158" r="9" fill="#ffd43b"/>
+    <circle cx="210" cy="158" r="9" fill="#69db7c"/>
+    <g font-family="Menlo, Consolas, monospace" font-size="26">
+      <text x="150" y="232" fill="#adb5bd">// inside PHP (simplified)</text>
+      <text x="150" y="282" fill="#d9c4ef">basket</text>
+      <text x="252" y="282" fill="#f8f9fa">= alloc();</text>
+      <text x="150" y="332" fill="#e8a0b8">free</text>
+      <text x="212" y="332" fill="#f8f9fa">(basket);</text>
+      <text x="150" y="382" fill="#adb5bd">// still pointing at it...</text>
+      <text x="150" y="432" fill="#ff6b6b">basket-&gt;read();</text>
+      <text x="398" y="432" fill="#ffd43b">💥</text>
+    </g>
+  </g>
+
+  <!-- memory blocks -->
+  <g filter="url(#shadow)">
+    <rect x="740" y="190" width="350" height="250" rx="28" fill="#fff"/>
+  </g>
+  <text x="772" y="240" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#2f3037">memory</text>
+  <g>
+    <rect x="772" y="268" width="88" height="66" rx="14" fill="#f9e6ec"/>
+    <rect x="872" y="268" width="88" height="66" rx="14" fill="url(#pink)"/>
+    <rect x="972" y="268" width="88" height="66" rx="14" fill="#f9e6ec"/>
+    <rect x="772" y="346" width="88" height="66" rx="14" fill="#ece2f7"/>
+    <rect x="872" y="346" width="88" height="66" rx="14" fill="#fff" stroke="#e5484d" stroke-width="4" stroke-dasharray="10 8"/>
+    <path d="M892 360 L912 384 L900 388 L922 404" stroke="#e5484d" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="972" y="346" width="88" height="66" rx="14" fill="#f9e6ec"/>
+  </g>
+
+  <!-- pointer arrow from code to broken block -->
+  <path d="M670 420 C 740 470, 820 470, 900 420" stroke="#b5577f" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="2 14"/>
+  <path d="M888 412 L904 418 L896 434" stroke="#b5577f" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- little bug -->
+  <g transform="translate(1010 520)">
+    <ellipse cx="0" cy="0" rx="46" ry="54" fill="#1f1d22"/>
+    <circle cx="0" cy="-58" r="26" fill="#1f1d22"/>
+    <circle cx="-9" cy="-62" r="7" fill="#fff"/><circle cx="-8" cy="-61" r="3.5" fill="#1f1d22"/>
+    <circle cx="11" cy="-62" r="7" fill="#fff"/><circle cx="12" cy="-61" r="3.5" fill="#1f1d22"/>
+    <path d="M-12 -82 L-24 -104 M12 -82 L24 -104" stroke="#1f1d22" stroke-width="5" stroke-linecap="round"/>
+    <path d="M0 -50 L0 52" stroke="#e07a9b" stroke-width="4"/>
+    <circle cx="-20" cy="-14" r="9" fill="#e07a9b"/><circle cx="20" cy="10" r="9" fill="#e07a9b"/><circle cx="-18" cy="28" r="7" fill="#e07a9b"/>
+    <path d="M-44 -20 L-72 -34 M-46 4 L-76 4 M-42 28 L-70 44 M44 -20 L72 -34 M46 4 L76 4 M42 28 L70 44" stroke="#1f1d22" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- title -->
+  <text x="110" y="618" font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif" font-size="88" font-weight="700" fill="#1f1d22">PHP2Shell</text>
+  <text x="114" y="672" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="600" fill="#7e3a5c">okay, but what actually went wrong?</text>
+</svg>

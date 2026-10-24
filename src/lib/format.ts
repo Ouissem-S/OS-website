@@ -29,3 +29,18 @@ export function defaultPostImage(title: string) {
   const initials = encodeURIComponent(title.slice(0, 2).toUpperCase() || "WE");
   return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='420' viewBox='0 0 640 420'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%23fff7fb'/%3E%3Cstop offset='0.52' stop-color='%23eaf6ff'/%3E%3Cstop offset='1' stop-color='%23f3ffe9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='640' height='420' fill='url(%23g)'/%3E%3Ccircle cx='520' cy='88' r='70' fill='%23ffd6e6' opacity='.7'/%3E%3Ccircle cx='92' cy='330' r='90' fill='%23d7f5ee' opacity='.75'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Poppins, Arial' font-size='96' font-weight='700' fill='%237a315f'%3E${initials}%3C/text%3E%3C/svg%3E`;
 }
+
+// Rough reading time, ignoring embedded images/videos and markdown symbols.
+export function readingTime(content: string) {
+  const text = content
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[video[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/[#>*_|`-]/g, " ");
+  const words = text.split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.round(words / 200))} min read`;
+}
+
+// "Real-time Systems + HCI" -> ["Real-time Systems", "HCI"]
+export function postTopics(category?: string) {
+  return (category || "").split(/\s*[+,/]\s*/).map((topic) => topic.trim()).filter(Boolean);
+}

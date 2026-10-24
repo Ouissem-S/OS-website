@@ -1,6 +1,8 @@
 .prose p {
-    color: var(--muted);
-    line-height: 1.85;
+    max-width: 62ch;
+    color: var(--text-soft);
+    font-size: 1.04rem;
+    line-height: 1.75;
 }
 
 .post-form input,
