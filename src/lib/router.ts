@@ -2,14 +2,7 @@ import type { MouseEvent } from "react";
 
 export function normalisePath(pathname: string) {
   if (window.location.hash.startsWith("#/")) return window.location.hash.slice(1);
-  if (pathname === "/" || pathname === "/index.html" || pathname === "/Main.html") return "/";
-  if (pathname === "/AboutMe.html") return "/about";
-  if (pathname === "/Blog.html") return "/blog";
-  if (pathname === "/new-post.html") return "/new";
-  if (pathname === "/view-post.html") {
-    const id = new URLSearchParams(window.location.search).get("id");
-    return id ? `/post/${id}` : "/blog";
-  }
+  if (pathname === "/" || pathname === "/index.html") return "/";
   return pathname;
 }
 

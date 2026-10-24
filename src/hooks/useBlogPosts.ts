@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getPosts, getPostsAsync, type BlogPost } from "../lib/blog";
+import { getPosts, getPostsAsync } from "../lib/blog/storage";
+import type { BlogPost } from "../lib/blog/types";
 
 export function useBlogPosts() {
   const [posts, setPosts] = useState<BlogPost[]>(() => getPosts());
