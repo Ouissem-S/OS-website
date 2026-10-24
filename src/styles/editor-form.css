@@ -22,7 +22,7 @@
     margin: 0;
     padding: 12px 14px;
     border-radius: 14px;
-    background: rgba(196, 63, 124, 0.1);
+    background: rgba(181, 87, 127, 0.1);
     color: var(--brand);
     font-weight: 700;
 }
@@ -61,7 +61,7 @@
 
 .toolbar-btn:hover {
     background: var(--accent-soft);
-    border-color: rgba(196, 63, 124, 0.3);
+    border-color: rgba(181, 87, 127, 0.3);
 }
 
 .toolbar-hint {
@@ -120,3 +120,132 @@ input[type="file"] {
     line-height: 1.7;
 }
 
+
+/* ── Home page "moment" picker ───────────────────────────── */
+
+.moment-picker {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 16px 18px 18px;
+    border: 1px dashed var(--pink-line);
+    border-radius: 18px;
+    background: var(--pink-soft);
+}
+
+.moment-picker legend {
+    padding: 0 6px;
+    color: var(--brand);
+    font-weight: 700;
+}
+
+.post-form .moment-picker__toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.post-form .moment-picker__toggle input {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    accent-color: var(--fuchsia);
+}
+
+.moment-picker__choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.moment-picker__choice {
+    position: relative;
+    width: 96px;
+    height: 120px;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    background: #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.moment-picker__choice:hover {
+    transform: translateY(-2px);
+}
+
+.moment-picker__choice img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.moment-picker__choice span {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--ink);
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.moment-picker__choice.is-selected {
+    border-color: var(--fuchsia);
+    box-shadow: 0 8px 20px rgba(181, 87, 127, 0.3);
+}
+
+.moment-picker__choice.is-selected::after {
+    content: "✓";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--fuchsia);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.moment-picker__upload {
+    display: grid;
+    place-items: center;
+    border: 2px dashed var(--pink-300);
+    color: var(--fuchsia);
+}
+
+.moment-picker__upload span {
+    position: static;
+    background: none;
+    color: inherit;
+}
+
+.post-form .pin-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px dashed var(--pink-line);
+    border-radius: 16px;
+    color: var(--ink);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.post-form .pin-toggle input {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    accent-color: var(--fuchsia);
+}

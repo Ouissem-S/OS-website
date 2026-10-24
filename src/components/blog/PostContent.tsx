@@ -1,6 +1,9 @@
 import { parseImageMeta } from "../../lib/blog/blocks";
 import type { BlogPost } from "../../lib/blog/types";
+import { renderInline } from "./inline";
+import { Callout, FlipBlock, Quiz, RevealBlock, Stat, Stats } from "./InteractiveBlocks";
 import { renderVideoPlayer } from "./VideoPlayer";
+import { postWidgets } from "./widgets";
 
 export function renderPostMedia(post: BlogPost) {
   if (post.media?.type === "video") {
@@ -99,18 +102,61 @@ export function renderRichPost(content: string) {
       continue;
     }
 
+    // Interactive blocks: [kind:argument](text) on a single line.
+    const blockPattern = /^\[(callout|stats|stat|reveal|flip|fix|quiz):([^\]]+)\]\(([\s\S]+)\)$/;
+    const block = line.match(blockPattern);
+    if (block?.[1] === "fix") {
+      const cards = [];
+      let fix: RegExpMatchArray | null = block;
+      while (fix?.[1] === "fix") {
+        cards.push(<FlipBlock key={index} front={fix[2]} back={fix[3]} variant="fix" />);
+        index += 1;
+        fix = index < lines.length ? lines[index].match(blockPattern) : null;
+      }
+      index -= 1;
+      elements.push(<div key={`fixes-${index}`} className="post-fix-grid">{cards}</div>);
+      continue;
+    }
+    if (block) {
+      const [, kind, arg, text] = block;
+      if (kind === "callout") elements.push(<Callout key={index} kind={arg} text={text} />);
+      else if (kind === "stats") elements.push(<Stats key={index} title={arg} items={text} />);
+      else if (kind === "stat") elements.push(<Stat key={index} value={arg} label={text} />);
+      else if (kind === "reveal") elements.push(<RevealBlock key={index} question={arg} answer={text} />);
+      else if (kind === "flip") elements.push(<FlipBlock key={index} front={arg} back={text} />);
+      else elements.push(<Quiz key={index} question={arg} options={text} />);
+      continue;
+    }
+
+    const widget = line.match(/^\[widget:([a-z0-9-]+)\]$/);
+    if (widget) {
+      const Widget = postWidgets[widget[1]];
+      if (Widget) elements.push(<Widget key={index} />);
+      continue;
+    }
+
+    if (line.startsWith("- ")) {
+      const items = [];
+      while (index < lines.length && lines[index].startsWith("- ")) {
+        items.push(<li key={index}>{renderInline(lines[index].slice(2))}</li>);
+        index += 1;
+      }
+      index -= 1;
+      elements.push(<ul key={`list-${index}`}>{items}</ul>);
+      continue;
+    }
+
     if (/^-{3,}/.test(line)) elements.push(<hr key={index} />);
-    else if (line.startsWith("### ")) elements.push(<h3 key={index}>{line.slice(4)}</h3>);
-    else if (line.startsWith("## ")) elements.push(<h2 key={index}>{line.slice(3)}</h2>);
-    else if (line.startsWith("> ")) elements.push(<blockquote key={index}>{line.slice(2)}</blockquote>);
-    else if (line.startsWith("- ")) elements.push(<li key={index}>{line.slice(2)}</li>);
+    else if (line.startsWith("### ")) elements.push(<h3 key={index}>{renderInline(line.slice(4))}</h3>);
+    else if (line.startsWith("## ")) elements.push(<h2 key={index}>{renderInline(line.slice(3))}</h2>);
+    else if (line.startsWith("> ")) elements.push(<blockquote key={index}>{renderInline(line.slice(2))}</blockquote>);
     else if (line.startsWith("[video")) {
       const match = line.match(/^\[video(?::(short|wide))?\]\(([\s\S]+)\)$/);
       if (match) {
         elements.push(renderVideoPlayer(match[2], (match[1] as "short" | "wide") || "wide", index));
       }
     } else {
-      elements.push(<p key={index}>{line}</p>);
+      elements.push(<p key={index}>{renderInline(line)}</p>);
     }
   }
 

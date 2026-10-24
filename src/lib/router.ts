@@ -2,7 +2,8 @@ import type { MouseEvent } from "react";
 
 export function normalisePath(pathname: string) {
   if (window.location.hash.startsWith("#/")) return window.location.hash.slice(1);
-  if (pathname === "/" || pathname === "/index.html") return "/";
+  const base = import.meta.env.BASE_URL;
+  if (pathname === "/" || pathname === "/index.html" || pathname === base || pathname === `${base}index.html`) return "/";
   return pathname;
 }
 

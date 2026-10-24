@@ -6,8 +6,29 @@
     --muted: #6a6872;
     --brand: #7a315f;
     --brand-2: #236b73;
-    --accent: #c43f7c;
-    --accent-soft: rgba(196, 63, 124, 0.1);
+    --accent: #b5577f;
+    --accent-soft: rgba(181, 87, 127, 0.1);
+    /* Softer, mixed palette: dusty rose, raspberry-mauve, plum, mauve, coral, peach, lilac. */
+    --pink: #d9779a;
+    --pink-deep: #b5577f;
+    --pink-soft: #fcf3f5;
+    --pink-line: rgba(181, 87, 127, 0.2);
+    --pink-glow: 0 18px 40px rgba(181, 87, 127, 0.22);
+    --pink-100: #f9e6ec;
+    --pink-200: #f1cbd8;
+    --pink-300: #e2a3b8;
+    --rose: #e07a9b;
+    --fuchsia: #b5577f;
+    --berry: #7e3a5c;
+    --mauve: #a77bab;
+    --coral: #ee9a8c;
+    --lilac: #d9c4ef;
+    --peach: #f4c7b4;
+    --grad-primary: linear-gradient(135deg, #e3889f 0%, #c06c93 55%, #a77bab 100%);
+    --grad-warm: linear-gradient(135deg, #f0a693 0%, #e07a9b 50%, #b5577f 100%);
+    --font-display: "Fredoka", "Poppins", Arial, sans-serif;
+    --font-body: "Nunito", "Poppins", Arial, sans-serif;
+    --text-soft: #45434c;
     --line: rgba(74, 63, 78, 0.14);
     --shadow: 0 24px 70px rgba(49, 46, 56, 0.12);
     --txt: var(--brand);
@@ -25,10 +46,10 @@ html,
 body {
     margin: 0;
     min-height: 100%;
-    font-family: "Poppins", Arial, sans-serif;
+    font-family: var(--font-body);
     color: var(--ink);
     background:
-        radial-gradient(circle at 12% 18%, rgba(217, 79, 149, 0.14), transparent 28%),
+        radial-gradient(circle at 12% 18%, rgba(224, 122, 155, 0.14), transparent 28%),
         radial-gradient(circle at 84% 8%, rgba(35, 107, 115, 0.14), transparent 24%),
         linear-gradient(135deg, #fffafc 0%, var(--bg) 44%, #f2fbf8 100%);
     overflow-x: hidden;

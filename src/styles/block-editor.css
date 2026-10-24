@@ -26,7 +26,7 @@
 
 .block-textarea:focus {
     outline: none;
-    border-color: rgba(196, 63, 124, 0.28);
+    border-color: rgba(181, 87, 127, 0.28);
     background: rgba(255, 255, 255, 0.6);
 }
 
@@ -39,7 +39,7 @@
     width: 100%;
 }
 
-.editor-img-block:hover { border-color: rgba(196, 63, 124, 0.38); }
+.editor-img-block:hover { border-color: rgba(181, 87, 127, 0.38); }
 
 .editor-img-block img {
     display: block;
@@ -127,7 +127,7 @@
 }
 
 .img-caption-input:focus {
-    outline: 2px solid rgba(196, 63, 124, 0.2);
+    outline: 2px solid rgba(181, 87, 127, 0.2);
     outline-offset: -2px;
 }
 

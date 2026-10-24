@@ -35,8 +35,15 @@ export function PostEditorPage({ editId }: { editId?: string }) {
   const [coverVideo, setCoverVideo] = useState<File | undefined>();
   const [embedUrl, setEmbedUrl] = useState("");
   const [editorError, setEditorError] = useState("");
+  // "cover" stands for whatever the post's cover image ends up being once it's saved.
+  const [pinned, setPinned] = useState(false);
+  const [momentEnabled, setMomentEnabled] = useState(false);
+  const [momentImage, setMomentImage] = useState("");
+  const [momentUpload, setMomentUpload] = useState("");
+  const [momentCaption, setMomentCaption] = useState("");
   const addImageRef = useRef<HTMLInputElement>(null);
   const addVideoRef = useRef<HTMLInputElement>(null);
+  const momentUploadRef = useRef<HTMLInputElement>(null);
   const activeTA = useRef<HTMLTextAreaElement | null>(null);
   const activeIdx = useRef(0);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -75,6 +82,11 @@ export function PostEditorPage({ editId }: { editId?: string }) {
     setBlocks(parseBlocks(loadedPost.content));
     setCoverPreview(loadedPost.image || "");
     setEmbedUrl(loadedPost.media?.type === "embed" ? loadedPost.media.url : "");
+    setPinned(Boolean(loadedPost.pinned));
+    const moment = loadedPost.moment;
+    setMomentEnabled(Boolean(moment));
+    setMomentImage(moment ? (moment.image === loadedPost.image ? "cover" : moment.image) : "");
+    setMomentCaption(moment?.caption || "");
   }, [loadedPost]);
 
   useEffect(() => {
@@ -250,15 +262,21 @@ export function PostEditorPage({ editId }: { editId?: string }) {
     catch (err) { setEditorError(err instanceof Error ? err.message : "Cover image failed."); return; }
     const videoData = await readFileAsDataURL(coverVideo);
     const embed = youtubeEmbedUrl(embedUrl);
+    const coverUrl = imageData || loadedPost?.image || "";
+    const momentPhoto = momentImage === "cover" ? coverUrl : momentImage;
+    if (momentEnabled && !momentPhoto) { setEditorError("Pick a photo for the home page moment, or untick it."); return; }
     const post: BlogPost = {
       id: loadedPost?.id ?? createPostId(),
       title: cleanTitle, category: category.trim(),
       excerpt: excerpt.trim() || createExcerpt(cleanContent),
       content: cleanContent,
-      image: imageData || loadedPost?.image || "",
+      image: coverUrl,
       media: videoData ? { type: "video", url: videoData } : embed ? { type: "embed", url: embed } : imageData ? { type: "image", url: imageData } : loadedPost?.media,
       date: publishDate || dateInputValue(loadedPost?.date),
-      location: location.trim() || undefined
+      location: location.trim() || undefined,
+      moment: momentEnabled ? { image: momentPhoto, caption: momentCaption.trim() || undefined } : undefined,
+      pinned: pinned || undefined,
+      legacyId: loadedPost?.legacyId
     };
     try { await savePost(post); navigate("/blog"); }
     catch (err) { setEditorError(err instanceof Error ? err.message : "Failed to save post to GitHub. Check your token and try again."); }
@@ -271,6 +289,25 @@ export function PostEditorPage({ editId }: { editId?: string }) {
     try { setCoverPreview(await readImageAsCompressedDataURL(file, 900, 0.78)); }
     catch { setEditorError("Cannot preview this image. Export as JPEG or PNG and try again."); }
   };
+
+  const addMomentPhoto = async (file?: File) => {
+    if (!file) return;
+    try {
+      const src = await readImageAsCompressedDataURL(file, 1200, 0.85);
+      setMomentUpload(src);
+      setMomentImage(src);
+    } catch {
+      setEditorError("Could not process this photo.");
+    }
+    if (momentUploadRef.current) momentUploadRef.current.value = "";
+  };
+
+  const momentChoices = [
+    ...(coverPreview ? [{ key: "cover", src: coverPreview, label: "Cover" }] : []),
+    ...blocks.flatMap((block) => (block.type === "image" ? [{ key: block.src, src: block.src, label: "From post" }] : [])),
+    ...(momentUpload ? [{ key: momentUpload, src: momentUpload, label: "Uploaded" }] : []),
+    ...(momentImage && momentImage !== "cover" ? [{ key: momentImage, src: momentImage, label: "Current" }] : [])
+  ].filter((choice, index, all) => all.findIndex((other) => other.key === choice.key) === index);
 
   return (
     <>
@@ -347,6 +384,42 @@ export function PostEditorPage({ editId }: { editId?: string }) {
               <input value={embedUrl} onChange={(e) => setEmbedUrl(e.target.value)} placeholder="YouTube or interactive embed URL" />
             </label>
             {coverPreview ? <img className="editor-preview" src={coverPreview} alt="Cover preview" /> : null}
+            <label className="pin-toggle">
+              <input type="checkbox" checked={pinned} onChange={(e) => setPinned(e.target.checked)} />
+              <span>📌 Pin this post to the top of my blog</span>
+            </label>
+            <fieldset className="moment-picker">
+              <legend>📸 Little moment</legend>
+              <label className="moment-picker__toggle">
+                <input type="checkbox" checked={momentEnabled} onChange={(e) => setMomentEnabled(e.target.checked)} />
+                <span>Show this post on my home page with one photo</span>
+              </label>
+              {momentEnabled ? (
+                <>
+                  <div className="moment-picker__choices">
+                    {momentChoices.map((choice) => (
+                      <button
+                        key={choice.key}
+                        type="button"
+                        className={`moment-picker__choice${momentImage === choice.key ? " is-selected" : ""}`}
+                        onClick={() => setMomentImage(choice.key)}
+                      >
+                        <img src={choice.src} alt="" />
+                        <span>{choice.label}</span>
+                      </button>
+                    ))}
+                    <button type="button" className="moment-picker__choice moment-picker__upload" onClick={() => momentUploadRef.current?.click()}>
+                      <span>+ Upload photo</span>
+                    </button>
+                    <input ref={momentUploadRef} type="file" accept="image/png,image/jpeg,image/webp" style={{ display: "none" }}
+                      onChange={(e) => void addMomentPhoto(e.target.files?.[0])} />
+                  </div>
+                  <label><span>Moment caption</span>
+                    <input value={momentCaption} onChange={(e) => setMomentCaption(e.target.value)} placeholder={excerpt || "A short caption for the photo"} />
+                  </label>
+                </>
+              ) : null}
+            </fieldset>
             {editorError ? <p className="editor-error">{editorError}</p> : null}
             <div className="form-actions">
               <a className="ghost-button" href="#/blog" onClick={navigateTo("/blog")}>

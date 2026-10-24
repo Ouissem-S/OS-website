@@ -1,5 +1,8 @@
 import { useEffect } from "react";
+import { ClickHearts } from "./components/layout/ClickHearts";
+import { SiteFooter } from "./components/layout/SiteFooter";
 import { NetworkCanvas } from "./components/layout/NetworkCanvas";
+import { useOwnerShortcut } from "./hooks/useOwnerShortcut";
 import { useRoute } from "./hooks/useRoute";
 import { AboutPage } from "./pages/AboutPage";
 import { BlogPage } from "./pages/BlogPage";
@@ -10,6 +13,7 @@ import { PostPage } from "./pages/PostPage";
 
 export function App() {
   const route = useRoute();
+  const onFooterTap = useOwnerShortcut();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -26,8 +30,9 @@ export function App() {
   return (
     <>
       <NetworkCanvas />
+      <ClickHearts />
       {page}
-      <footer className="site-footer">Copyright © Ouissem Salag 2026</footer>
+      <SiteFooter onCopyrightTap={onFooterTap} />
     </>
   );
 }
