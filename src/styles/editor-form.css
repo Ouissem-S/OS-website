@@ -1,0 +1,122 @@
+.post-form {
+    display: grid;
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.media-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.editor-preview {
+    width: min(100%, 340px);
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+}
+
+.editor-error {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(196, 63, 124, 0.1);
+    color: var(--brand);
+    font-weight: 700;
+}
+
+.post-form label,
+.post-form-field {
+    display: grid;
+    gap: 8px;
+    color: var(--brand);
+    font-weight: 700;
+}
+
+.post-form-label {
+    color: var(--brand);
+    font-weight: 700;
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.toolbar-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--brand);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.toolbar-btn:hover {
+    background: var(--accent-soft);
+    border-color: rgba(196, 63, 124, 0.3);
+}
+
+.toolbar-hint {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 400;
+}
+
+.format-menu {
+    position: fixed;
+    z-index: 9999;
+    min-width: 158px;
+    padding: 6px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px rgba(49, 46, 56, 0.18);
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.format-menu button {
+    width: 100%;
+    padding: 9px 14px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.format-menu button:hover {
+    background: var(--accent-soft);
+    color: var(--brand);
+}
+
+.title-input,
+.editor,
+input[type="file"] {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--ink);
+}
+
+.editor {
+    min-height: 260px;
+    resize: vertical;
+    line-height: 1.7;
+}
+

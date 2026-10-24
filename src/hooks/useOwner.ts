@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { isOwner } from "../lib/blog";
+import { isOwner } from "../lib/auth";
 
 export function useOwner() {
   const [owner, setOwner] = useState(() => isOwner());

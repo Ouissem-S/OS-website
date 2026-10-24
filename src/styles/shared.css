@@ -1,0 +1,92 @@
+.prose p {
+    color: var(--muted);
+    line-height: 1.85;
+}
+
+.post-form input,
+.post-form textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--ink);
+}
+
+.post-form textarea {
+    min-height: 260px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.empty-state {
+    border: 1px dashed var(--line);
+    border-radius: 18px;
+    padding: 26px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.58);
+}
+
+.container {
+    width: min(920px, calc(100% - 32px));
+    margin: 80px auto;
+    border-radius: 24px;
+    padding: clamp(24px, 5vw, 44px);
+}
+
+.container h1 {
+    color: var(--brand);
+}
+
+.container p,
+.container li {
+    color: var(--muted);
+    line-height: 1.75;
+}
+
+.actions,
+.actions--stack,
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--surface-strong);
+    border: 1px solid var(--line);
+    color: var(--brand);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.78rem;
+}
+
+.ico.in {
+    background: #0077b5;
+}
+
+.ico.gh {
+    background: #333;
+}
+
+.ico.mail {
+    background: #d44638;
+}
+

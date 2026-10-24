@@ -1,5 +1,6 @@
-import { defaultPostImage, formatDate, type BlogPost } from "../lib/blog";
-import { navigateTo } from "../lib/router";
+import type { BlogPost } from "../../lib/blog/types";
+import { defaultPostImage, formatDate } from "../../lib/format";
+import { navigateTo } from "../../lib/router";
 
 type PostCardProps = {
   post: BlogPost;
