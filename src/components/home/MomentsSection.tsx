@@ -70,7 +70,7 @@ function MomentCard({ moment, liked, onToggleLike }: { moment: Moment; liked: bo
     <article className="moment">
       <header className="moment__header">
         <span className="moment__avatar">
-          <img src={`${BASE}photos/ouissem-avatar.jpg`} alt="" />
+          <img src={`${BASE}photos/ouissem-profile.jpg`} alt="" />
         </span>
         <span>
           <strong>Ouissem Salag</strong>

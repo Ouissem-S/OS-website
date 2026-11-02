@@ -1,0 +1,1056 @@
+/* About page "My story": mini me walks a dashed line from chapter to chapter. */
+
+.story {
+    --story-minime: 120px;
+    --story-spot: 190px;
+    /* How far the speech bubble hangs outwards past mini me, as a share of her width. */
+    --bubble-out: 0.16;
+    margin-top: 22px;
+    padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 48px) clamp(40px, 6vw, 72px);
+    border-radius: 34px;
+    border: 1px solid rgba(224, 122, 155, 0.16);
+    background:
+        radial-gradient(circle at 100% 0%, rgba(217, 196, 239, 0.4), transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(241, 203, 216, 0.5), transparent 45%),
+        rgba(255, 255, 255, 0.94);
+    box-shadow: 0 30px 80px rgba(181, 87, 127, 0.1);
+    /* No backdrop blur here: the panel is tall and the network canvas behind it animates every frame. */
+    overflow: clip;
+}
+
+.story__intro {
+    text-align: center;
+}
+
+.story__intro h2 {
+    margin: 0;
+    color: #17171a;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 600;
+}
+
+.story__intro h2 span {
+    background: linear-gradient(120deg, var(--rose), var(--fuchsia), var(--mauve));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.story__intro p {
+    margin: 6px 0 0;
+    color: var(--muted);
+}
+
+.story__track {
+    position: relative;
+    display: grid;
+    gap: clamp(28px, 4vw, 44px);
+    margin-top: clamp(24px, 4vw, 40px);
+}
+
+/* ── The dashed line ─────────────────────────────────────── */
+
+.story__line {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.story__dash {
+    fill: none;
+    stroke: var(--rose);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 9 11;
+    opacity: 0.75;
+}
+
+/* ── Chapters ────────────────────────────────────────────── */
+
+.story-chapter {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: var(--story-spot) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(12px, 3vw, 32px);
+}
+
+.story-chapter--right {
+    grid-template-columns: minmax(0, 1fr) var(--story-spot);
+}
+
+.story-chapter--right .story-chapter__spot {
+    order: 2;
+}
+
+.story-chapter__spot {
+    height: calc(var(--story-minime) * 1.3);
+}
+
+.story-chapter__body {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+    justify-items: start;
+    gap: 14px;
+}
+
+.story-chapter--right .story-chapter__body {
+    justify-items: end;
+    text-align: right;
+}
+
+.story-chapter__num {
+    color: var(--pink-300);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.story-chapter h3 {
+    max-width: 30ch;
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.story-chapter p {
+    max-width: 44ch;
+    margin: 0;
+    color: var(--text-soft);
+}
+
+/* 1 · Algerian chip */
+
+.story-chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--pink-line);
+    background: var(--pink-100);
+    color: var(--berry);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    box-shadow: 0 10px 24px rgba(181, 87, 127, 0.14);
+}
+
+.story-chip__tail {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 1px;
+    height: 1px;
+}
+
+/* 2 · Map */
+
+.algeria-map {
+    width: min(320px, 100%);
+    height: auto;
+    overflow: visible;
+}
+
+.algeria-map__land {
+    stroke: #fff;
+    stroke-width: 5;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 18px 26px rgba(126, 58, 92, 0.22));
+}
+
+.algeria-map__heart {
+    fill: #fff;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: story-heart 1.8s ease-in-out infinite;
+}
+
+.algeria-map__ping {
+    fill: rgba(255, 255, 255, 0.55);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: story-ping 1.8s ease-out infinite;
+}
+
+@keyframes story-heart {
+    0%, 100% { transform: scale(1.6); }
+    15% { transform: scale(1.85); }
+    30% { transform: scale(1.6); }
+    45% { transform: scale(1.75); }
+}
+
+@keyframes story-ping {
+    from { opacity: 0.9; transform: scale(0.6); }
+    to { opacity: 0; transform: scale(2.4); }
+}
+
+/* 3 · Languages */
+
+.story-langs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.story-lang {
+    position: relative;
+    padding: 12px 20px;
+    border: 1px solid var(--pink-line);
+    border-radius: 22px 22px 22px 6px;
+    background: #fff;
+    color: var(--ink);
+    font: 600 1.05rem var(--font-display);
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(126, 58, 92, 0.1);
+    transition: transform 0.25s cubic-bezier(0.3, 1.8, 0.5, 1), background 0.2s ease, color 0.2s ease;
+}
+
+.story-lang:nth-child(2) { border-radius: 22px 22px 6px 22px; }
+
+.story-lang:hover {
+    transform: translateY(-3px) rotate(-2deg);
+}
+
+.story-lang.is-active {
+    border-color: transparent;
+    background: var(--grad-primary);
+    color: #fff;
+}
+
+.story-lang:focus-visible {
+    outline: 3px solid var(--rose);
+    outline-offset: 3px;
+}
+
+/* 4 · Spanish progress */
+
+.story-progress {
+    display: grid;
+    gap: 8px;
+    width: min(320px, 100%);
+    justify-items: inherit;
+}
+
+.story-progress__label {
+    color: var(--berry);
+    font-weight: 700;
+}
+
+.story-progress__bar {
+    width: 100%;
+    height: 14px;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--pink-100);
+    box-shadow: inset 0 1px 3px rgba(126, 58, 92, 0.12);
+}
+
+.story-progress__fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #8fd3b0, var(--rose));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s;
+}
+
+.story-progress.is-visible .story-progress__fill {
+    transform: scaleX(var(--level));
+}
+
+/* 8 · Third year: catch the orbs */
+
+.xp {
+    display: grid;
+    gap: 12px;
+    width: min(420px, 100%);
+}
+
+.xp__field {
+    position: relative;
+    height: 170px;
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(217, 196, 239, 0.55), transparent 55%),
+        radial-gradient(circle at 80% 90%, rgba(241, 203, 216, 0.6), transparent 55%),
+        #fff;
+    border: 1px solid var(--pink-line);
+}
+
+.xp-orb {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #fff 0 18%, rgba(255, 255, 255, 0.5) 40%, rgba(224, 122, 155, 0.25));
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(126, 58, 92, 0.16);
+    cursor: pointer;
+    animation: xp-float 4s ease-in-out infinite;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.xp-orb--1 { left: 6%; top: 14%; }
+.xp-orb--2 { left: 32%; top: 52%; animation-delay: -1s; animation-duration: 4.6s; }
+.xp-orb--3 { left: 58%; top: 10%; animation-delay: -2s; animation-duration: 3.8s; }
+.xp-orb--4 { right: 6%; top: 50%; animation-delay: -3s; animation-duration: 5s; }
+
+@keyframes xp-float {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(6px, -10px); }
+    66% { transform: translate(-6px, 6px); }
+}
+
+.xp-orb__emoji {
+    font-size: 1.9rem;
+    transition: transform 0.35s cubic-bezier(0.3, 1.8, 0.5, 1), opacity 0.3s ease;
+}
+
+.xp-orb:hover .xp-orb__emoji {
+    transform: scale(1.18) rotate(-8deg);
+}
+
+.xp-orb:focus-visible {
+    outline: 3px solid var(--rose);
+    outline-offset: 3px;
+}
+
+.xp-orb.is-caught {
+    cursor: default;
+    background: none;
+    box-shadow: none;
+    animation: none;
+}
+
+.xp-orb.is-caught .xp-orb__emoji {
+    opacity: 0;
+    transform: scale(0.2) translateY(60px);
+}
+
+.xp-orb__plus {
+    position: absolute;
+    white-space: nowrap;
+    color: var(--fuchsia);
+    font: 700 0.9rem var(--font-display);
+    animation: xp-plus 1.2s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes xp-plus {
+    0% { opacity: 0; transform: translateY(6px) scale(0.6); }
+    25% { opacity: 1; transform: translateY(-8px) scale(1.1); }
+    100% { opacity: 0; transform: translateY(-34px) scale(1); }
+}
+
+.xp__hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.xp__hud {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.xp__level {
+    color: var(--berry);
+    font: 700 1rem var(--font-display);
+}
+
+.xp__bar {
+    height: 14px;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--pink-100);
+    box-shadow: inset 0 1px 3px rgba(126, 58, 92, 0.12);
+}
+
+.xp__fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--grad-primary);
+    transform: scaleX(var(--level));
+    transform-origin: left;
+    transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.xp__count {
+    color: var(--muted);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.xp__again {
+    padding: 4px 12px;
+    border: 1px solid var(--pink-line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--berry);
+    font: 700 0.85rem var(--font-body);
+    cursor: pointer;
+}
+
+.xp.is-done .xp__level {
+    animation: xp-pop 0.6s cubic-bezier(0.3, 1.8, 0.5, 1);
+}
+
+@keyframes xp-pop {
+    from { transform: scale(0.5); }
+}
+
+.xp__confetti span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--c);
+    animation: xp-confetti 1.3s cubic-bezier(0.2, 0.7, 0.4, 1) forwards;
+    animation-delay: calc(var(--i) * 18ms);
+    pointer-events: none;
+}
+
+@keyframes xp-confetti {
+    from { opacity: 1; transform: rotate(calc(var(--i) * 22.5deg)) translateY(0) rotate(0); }
+    to { opacity: 0; transform: rotate(calc(var(--i) * 22.5deg)) translateY(-120px) rotate(300deg); }
+}
+
+/* 7 · Moving to the UK: boarding pass */
+
+.pass {
+    position: relative;
+    display: flex;
+    width: min(470px, 100%);
+    padding: 0;
+    border: 0;
+    border-radius: 20px;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    filter: drop-shadow(0 14px 22px rgba(126, 58, 92, 0.14));
+    transition: transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.pass:hover {
+    transform: rotate(-1.5deg) translateY(-2px);
+}
+
+.pass:focus-visible {
+    outline: 3px solid var(--rose);
+    outline-offset: 4px;
+}
+
+.pass__main {
+    flex: 1 1 0;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 20px 6px 6px 20px;
+    background: #fff;
+}
+
+.pass__route {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.pass__city {
+    display: grid;
+}
+
+.pass__city strong {
+    color: var(--berry);
+    font: 700 1.6rem/1 var(--font-display);
+    letter-spacing: 0.04em;
+}
+
+.pass__city small,
+.pass__details small {
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.pass__flight {
+    position: relative;
+    flex: 0 0 140px;
+    height: 44px;
+}
+
+.pass__flight svg {
+    display: block;
+    width: 140px;
+    height: 44px;
+    fill: none;
+    stroke: var(--pink-300);
+    stroke-width: 2;
+    stroke-dasharray: 5 6;
+}
+
+.pass__plane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1.1rem;
+    line-height: 1;
+    offset-path: path("M6 38 Q 70 -8 134 38");
+    offset-rotate: auto 45deg;
+    offset-distance: 0%;
+}
+
+.pass.is-boarded .pass__plane {
+    animation: pass-fly 1.6s cubic-bezier(0.45, 0, 0.3, 1) forwards;
+}
+
+@keyframes pass-fly {
+    to { offset-distance: 100%; }
+}
+
+.pass__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.pass__details > span {
+    display: grid;
+}
+
+.pass__stub {
+    flex: 0 0 96px;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 10px;
+    padding: 14px;
+    border-left: 2px dashed rgba(255, 255, 255, 0.8);
+    border-radius: 6px 20px 20px 6px;
+    background: var(--grad-primary);
+    color: #fff;
+}
+
+.pass__barcode {
+    width: 64px;
+    height: 34px;
+    background: repeating-linear-gradient(90deg, #fff 0 2px, transparent 2px 4px, #fff 4px 5px, transparent 5px 8px);
+    opacity: 0.9;
+}
+
+.pass__board {
+    font: 700 0.85rem var(--font-display);
+}
+
+.pass__stamp {
+    position: absolute;
+    left: 30%;
+    top: 8px;
+    padding: 4px 10px;
+    border: 3px double var(--fuchsia);
+    border-radius: 8px;
+    color: var(--fuchsia);
+    font: 700 0.8rem var(--font-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: rotate(-12deg);
+    opacity: 0.85;
+    animation: pass-stamp 0.45s cubic-bezier(0.3, 1.4, 0.5, 1) 1.4s both;
+    pointer-events: none;
+}
+
+@keyframes pass-stamp {
+    from { opacity: 0; transform: rotate(-12deg) scale(2.2); }
+}
+
+/* 9 · Free time: the cat walk */
+
+.catwalk {
+    --cat: 90px;
+    position: relative;
+    width: min(460px, 100%);
+    container-type: inline-size;
+}
+
+/* The cat walks in from the left edge; its head crosses the whole width, so it starts mostly hidden. */
+.catwalk__lane {
+    position: relative;
+    height: calc(var(--cat) * 0.66 + 22px);
+    overflow: hidden;
+    border-bottom: 2px dashed var(--pink-200);
+}
+
+.catwalk__cat {
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    left: 0;
+    width: var(--cat);
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    transform: translateX(calc(var(--cat) * -0.85));
+    -webkit-tap-highlight-color: transparent;
+}
+
+.catwalk.is-on .catwalk__cat {
+    animation: cat-walk var(--walk) linear forwards;
+}
+
+@keyframes cat-walk {
+    from { transform: translateX(calc(var(--cat) * -0.85)); }
+    to { transform: translateX(calc(100cqw - var(--cat))); }
+}
+
+.cat {
+    display: block;
+    width: 100%;
+    margin-bottom: calc(var(--cat) * -0.08);
+    overflow: visible;
+}
+
+.cat__tail {
+    fill: none;
+    stroke: #f6c9a8;
+    stroke-width: 7;
+    stroke-linecap: round;
+    transform-box: view-box;
+    transform-origin: 26px 50px;
+    animation: cat-tail 1.6s ease-in-out infinite;
+}
+
+@keyframes cat-tail {
+    0%, 100% { transform: rotate(-8deg); }
+    50% { transform: rotate(12deg); }
+}
+
+.cat__leg {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+}
+
+.catwalk.is-on:not(.is-done) .cat {
+    animation: cat-bob 0.35s ease-in-out infinite alternate;
+}
+
+.catwalk.is-on:not(.is-done) .cat__leg--a {
+    animation: cat-step 0.35s ease-in-out infinite alternate;
+}
+
+.catwalk.is-on:not(.is-done) .cat__leg--b {
+    animation: cat-step 0.35s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes cat-step {
+    from { transform: rotate(-22deg); }
+    to { transform: rotate(22deg); }
+}
+
+@keyframes cat-bob {
+    to { transform: translateY(-2px); }
+}
+
+.catwalk__meow {
+    position: absolute;
+    top: -20px;
+    right: 6px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--berry);
+    font: 700 0.72rem var(--font-display);
+    white-space: nowrap;
+    box-shadow: 0 6px 14px rgba(126, 58, 92, 0.14);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.3, 1.8, 0.5, 1);
+}
+
+.catwalk.is-done .catwalk__meow {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.catwalk__shelf {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 6px;
+    padding: 14px 4px 4px;
+}
+
+.catwalk__item {
+    flex: 0 0 20%;
+    min-width: 0;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 6px;
+    padding: 6px 2px;
+    border: 0;
+    border-radius: 14px;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    opacity: 0;
+    transition: background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.catwalk__item:hover {
+    background: var(--pink-soft);
+}
+
+.catwalk.is-on .catwalk__item {
+    animation: cat-drop 0.7s cubic-bezier(0.3, 1.2, 0.5, 1) both;
+    animation-delay: calc(var(--at) * var(--walk));
+}
+
+@keyframes cat-drop {
+    0% { opacity: 0; transform: translateY(-56px) scale(0.4); }
+    15% { opacity: 1; }
+    65% { transform: translateY(0) scale(1.05); }
+    82% { transform: translateY(-6px); }
+    100% { opacity: 1; transform: none; }
+}
+
+.catwalk__emoji {
+    position: relative;
+    font-size: 2rem;
+    line-height: 1.1;
+    transition: transform 0.3s cubic-bezier(0.3, 1.8, 0.5, 1);
+}
+
+.catwalk__item:hover .catwalk__emoji,
+.catwalk__item:focus-visible .catwalk__emoji {
+    transform: scale(1.15) rotate(-8deg);
+}
+
+.catwalk__item:focus-visible {
+    outline: 3px solid var(--rose);
+    outline-offset: 2px;
+}
+
+.catwalk__label {
+    color: var(--berry);
+    font: 600 0.8rem/1.25 var(--font-display);
+    text-align: center;
+}
+
+/* "A LOT": a few extra leaves around the nature walk. */
+.catwalk__extra {
+    position: absolute;
+    font-size: 0.95rem;
+}
+
+.catwalk__extra--1 { left: -14px; bottom: -2px; transform: rotate(-30deg); }
+.catwalk__extra--2 { right: -14px; bottom: 0; transform: rotate(25deg); }
+.catwalk__extra--3 { right: -6px; top: -10px; transform: rotate(60deg); font-size: 0.8rem; }
+
+/* Code window */
+
+.story-code {
+    width: min(360px, 100%);
+    padding: 12px 16px 16px;
+    border-radius: 16px;
+    background: #2b2230;
+    box-shadow: 0 18px 36px rgba(49, 46, 56, 0.2);
+}
+
+.story-code__dots {
+    display: block;
+    width: 8px;
+    height: 8px;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    background: var(--coral);
+    box-shadow: 14px 0 #f4d58d, 28px 0 #8fd3b0;
+}
+
+.story-code code {
+    display: block;
+    min-height: 1.5em;
+    color: #f7e9f0;
+    font: 0.92rem/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+    white-space: pre;
+    overflow: hidden;
+}
+
+.story-code__prompt {
+    color: var(--rose);
+}
+
+.story-code__caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    background: var(--rose);
+    animation: story-caret 1s steps(1) infinite;
+}
+
+@keyframes story-caret {
+    50% { opacity: 0; }
+}
+
+/* ── Mini me, the walker ─────────────────────────────────── */
+
+.story__walker {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: var(--story-minime);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.story__walker.is-ready {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+.story__walker-inner {
+    position: relative;
+    transform: translate(-50%, -50%);
+}
+
+.story__minime {
+    width: 100%;
+    pointer-events: auto;
+}
+
+/* A filter would repaint on every bob, so the small figure skips the hero's drop shadow. */
+.story__minime .minime {
+    filter: none;
+}
+
+.story__hop {
+    display: block;
+}
+
+.story__walker.is-walking .story__hop {
+    animation: story-hop 0.42s ease-in-out infinite alternate;
+}
+
+@keyframes story-hop {
+    from { transform: translateY(0) rotate(calc(var(--story-tilt, 1) * 3deg)); }
+    to { transform: translateY(-7px) rotate(calc(var(--story-tilt, 1) * 7deg)); }
+}
+
+.story__bubble {
+    position: absolute;
+    bottom: calc(100% - 6px);
+    left: 50%;
+    width: max-content;
+    max-width: 190px;
+    margin: 0;
+    padding: 9px 14px;
+    border-radius: 18px;
+    background: #fff;
+    color: var(--ink);
+    font: 600 0.95rem/1.35 var(--font-display);
+    box-shadow: 0 12px 26px rgba(126, 58, 92, 0.16);
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.85);
+    transform-origin: bottom center;
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.story__bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 3px;
+    background: inherit;
+    transform: rotate(45deg);
+}
+
+.story__bubble.is-shown {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+}
+
+/* Keep the bubble inside the panel: lean it towards the chapter. */
+.story__walker--left .story__bubble {
+    left: calc(var(--story-minime) * var(--bubble-out) * -1);
+    transform: translate(0, 6px) scale(0.85);
+    transform-origin: bottom left;
+}
+
+.story__walker--left .story__bubble.is-shown {
+    transform: translate(0, 0) scale(1);
+}
+
+.story__walker--left .story__bubble::after {
+    left: calc(var(--story-minime) * (0.5 + var(--bubble-out)) - 7px);
+    margin-left: 0;
+}
+
+.story__walker--right .story__bubble {
+    left: auto;
+    right: calc(var(--story-minime) * var(--bubble-out) * -1);
+    transform: translate(0, 6px) scale(0.85);
+    transform-origin: bottom right;
+}
+
+.story__walker--right .story__bubble.is-shown {
+    transform: translate(0, 0) scale(1);
+}
+
+.story__walker--right .story__bubble::after {
+    left: auto;
+    right: calc(var(--story-minime) * (0.5 + var(--bubble-out)) - 7px);
+    margin-left: 0;
+}
+
+.story__bubble[lang="ar"] {
+    direction: rtl;
+    font-size: 1.15rem;
+}
+
+@media (max-width: 720px) {
+    .story {
+        --story-minime: 84px;
+        --story-spot: 92px;
+        --bubble-out: 0.22;
+    }
+
+    /* Narrow enough to stay over mini me's column instead of the chapter text. */
+    .story__bubble {
+        max-width: 118px;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+    }
+
+    .xp__hud {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .pass {
+        flex-direction: column;
+    }
+
+    .pass__main {
+        border-radius: 20px 20px 6px 6px;
+    }
+
+    .pass__stub {
+        flex-basis: auto;
+        grid-auto-flow: column;
+        border-left: 0;
+        border-top: 2px dashed rgba(255, 255, 255, 0.8);
+        border-radius: 6px 6px 20px 20px;
+    }
+
+    .pass__stamp {
+        left: 18%;
+        top: 4px;
+    }
+
+    .pass__main {
+        padding: 14px;
+    }
+
+    .pass__city strong {
+        font-size: 1.25rem;
+    }
+
+    .pass__city small {
+        font-size: 0.6rem;
+        letter-spacing: 0;
+    }
+
+    /* zoom (unlike transform) shrinks the layout box too, and the plane's flight path with it. */
+    .pass__flight {
+        zoom: 0.5;
+    }
+
+    .catwalk {
+        --cat: 66px;
+    }
+
+    .catwalk__item {
+        flex-basis: 33.33%;
+    }
+
+    .catwalk__emoji {
+        font-size: 1.6rem;
+    }
+
+    .catwalk__label {
+        font-size: 0.7rem;
+    }
+
+    .xp__bar {
+        grid-column: 1 / -1;
+        order: 3;
+    }
+
+    .story-lang {
+        padding: 10px 16px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .algeria-map__heart,
+    .algeria-map__ping,
+    .story-code__caret,
+    .story__walker.is-walking .story__hop,
+    .xp-orb,
+    .pass__plane,
+    .pass__stamp,
+    .catwalk * {
+        animation: none;
+    }
+
+    .story-progress__fill,
+    .story__bubble {
+        transition: none;
+    }
+}
