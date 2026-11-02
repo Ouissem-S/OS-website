@@ -64,7 +64,7 @@ export function PostPage({ id }: { id: string }) {
               </div>
               <h1>{post.title}</h1>
               <div className="post-view__author">
-                <img src={`${import.meta.env.BASE_URL}photos/ouissem-avatar.jpg`} alt="" />
+                <img src={`${import.meta.env.BASE_URL}photos/ouissem-profile.jpg`} alt="" />
                 <div>
                   <strong>Ouissem Salag</strong>
                   <span>{[formatDate(post.date), post.location, readingTime(post.content)].filter(Boolean).join(" · ")}</span>
@@ -77,7 +77,7 @@ export function PostPage({ id }: { id: string }) {
             </article>
 
             <section className="end-card" aria-labelledby="end-card-title">
-              <img src={`${import.meta.env.BASE_URL}photos/ouissem-avatar.jpg`} alt="" />
+              <img src={`${import.meta.env.BASE_URL}photos/ouissem-profile.jpg`} alt="" />
               <div>
                 <h2 id="end-card-title">Thanks for reading 💗</h2>
                 <p>I'm Ouissem, a Computer Science with AI student writing about what I build and learn.</p>

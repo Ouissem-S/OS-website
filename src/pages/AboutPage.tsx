@@ -1,6 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { SiteNav } from "../components/layout/SiteNav";
 import { Reveal } from "../components/Reveal";
+import { MyStory } from "../components/about/MyStory";
 import { navigateTo } from "../lib/router";
 
 const facts = [
@@ -41,7 +42,7 @@ export function AboutPage() {
         <section className="about-hero">
           <figure className="polaroid">
             <span className="polaroid__tape" aria-hidden="true" />
-            <img src={`${import.meta.env.BASE_URL}photos/ouissem.jpg`} alt="Ouissem Salag" />
+            <img src={`${import.meta.env.BASE_URL}photos/ouissem-portrait.jpg`} alt="Ouissem Salag" />
             <span className="polaroid__sticker polaroid__sticker--1" aria-hidden="true">💗</span>
             <span className="polaroid__sticker polaroid__sticker--2" aria-hidden="true">✨</span>
             <span className="polaroid__sticker polaroid__sticker--3" aria-hidden="true">🌸</span>
@@ -73,15 +74,17 @@ export function AboutPage() {
           ))}
         </section>
 
+        <MyStory />
+
         <Reveal>
           <section className="about-cta">
             <div>
-              <h2>Let's build something lovely ✨</h2>
+              <h2>Let's connect 💌</h2>
               <p>Want to chat about AI, a project, or an opportunity? I'd love to hear from you.</p>
             </div>
             <div className="about-cta__actions">
               <a className="pink-button" href="#/contact" onClick={navigateTo("/contact")}>
-                Say hi 👋
+                Find my socials 👋
               </a>
               <a className="ghost-button" href="#/blog" onClick={navigateTo("/blog")}>
                 Read my blog
