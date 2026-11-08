@@ -5,7 +5,8 @@ import { PROJECT_COVERS_PATH } from "../config";
 import { readFileAsDataURL, readImageAsCompressedDataURL } from "./files";
 import { fetchRawJson, fetchRemoteJson, requireToken, uploadDataUrl, writeJsonFile } from "./githubContent";
 
-export type ProjectCover = { type: "image" | "video"; url: string };
+// fit "contain" shows the whole picture (zoomed out) with a blurred copy filling the sides.
+export type ProjectCover = { type: "image" | "video"; url: string; fit?: "cover" | "contain" };
 export type ProjectCovers = Record<string, ProjectCover>;
 
 let cachedCovers: ProjectCovers | null = null;

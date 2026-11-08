@@ -295,6 +295,19 @@
     transition: transform 0.6s ease;
 }
 
+.project-card__media--contain {
+    object-fit: contain;
+}
+
+.project-card__media--backdrop {
+    filter: blur(18px) brightness(0.75);
+    transform: scale(1.2);
+}
+
+.project-card:hover .project-card__media--backdrop {
+    transform: scale(1.2);
+}
+
 .project-card--has-cover .project-card__cover::after {
     content: "";
     position: absolute;

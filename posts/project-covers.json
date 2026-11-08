@@ -1,6 +1,7 @@
 {
   "Harry-Styles-Wembley-Retro-2000s-game": {
     "type": "image",
-    "url": "/projects/harry-styles-wembley.jpg"
+    "url": "/projects/harry-styles-wembley.jpg",
+    "fit": "contain"
   }
 }

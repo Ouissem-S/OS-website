@@ -125,6 +125,11 @@ export function ProjectCard({
       <div className={`project-card__cover${dragDepth > 0 ? " is-drop-target" : ""}`} {...dropHandlers}>
         {cover?.type === "video" ? (
           <video className="project-card__media" src={cover.url} autoPlay={!prefersReducedMotion()} muted loop playsInline preload="metadata" />
+        ) : cover?.fit === "contain" ? (
+          <>
+            <img className="project-card__media project-card__media--backdrop" src={cover.url} alt="" loading="lazy" aria-hidden="true" />
+            <img className="project-card__media project-card__media--contain" src={cover.url} alt="" loading="lazy" />
+          </>
         ) : cover ? (
           <img className="project-card__media" src={cover.url} alt="" loading="lazy" />
         ) : (
