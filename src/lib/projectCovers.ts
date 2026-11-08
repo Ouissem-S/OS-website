@@ -2,6 +2,7 @@
 // Stored in posts/project-covers.json next to the blog posts and edited in owner mode.
 
 import { PROJECT_COVERS_PATH } from "../config";
+import { readFileAsDataURL, readImageAsCompressedDataURL } from "./files";
 import { fetchRawJson, fetchRemoteJson, requireToken, uploadDataUrl, writeJsonFile } from "./githubContent";
 
 export type ProjectCover = { type: "image" | "video"; url: string };
@@ -38,4 +39,18 @@ export async function saveProjectCover(repoName: string, cover: ProjectCover | n
 
 export function guessMediaType(url: string): ProjectCover["type"] {
   return /^data:video\/|\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(url) ? "video" : "image";
+}
+
+const MAX_VIDEO_BYTES = 25_000_000;
+
+// Turns a picked or dropped file into a cover: images are resized/compressed, short videos kept as-is.
+export async function readCoverFile(file: File): Promise<ProjectCover> {
+  if (file.type.startsWith("video/")) {
+    if (file.size > MAX_VIDEO_BYTES) throw new Error("That video is over 25 MB. Try a shorter clip.");
+    return { type: "video", url: await readFileAsDataURL(file) };
+  }
+  if (file.type.startsWith("image/")) {
+    return { type: "image", url: await readImageAsCompressedDataURL(file, 1400, 0.85) };
+  }
+  throw new Error("Drop a picture or a video file.");
 }
