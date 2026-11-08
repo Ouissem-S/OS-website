@@ -94,77 +94,6 @@
     border-color: rgba(224, 122, 155, 0.2);
 }
 
-/* ── Interests: two drifting rows of pastel sticker chips ── */
-
-.interests {
-    display: grid;
-    gap: 12px;
-    margin: 26px 0 4px;
-    padding: 6px 0;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
-}
-
-.interests__row {
-    overflow: hidden;
-    padding: 8px 0;
-}
-
-.interests__track {
-    display: flex;
-    gap: 12px;
-    width: max-content;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    animation: interests-drift 60s linear infinite;
-}
-
-.interests__row--reverse .interests__track {
-    animation-direction: reverse;
-    animation-duration: 70s;
-}
-
-.interests__row:hover .interests__track {
-    animation-play-state: paused;
-}
-
-@keyframes interests-drift {
-    to { transform: translateX(-50%); }
-}
-
-.interest-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 16px 9px 10px;
-    border: 1px solid rgba(47, 48, 55, 0.06);
-    border-radius: 999px;
-    background: var(--chip-bg, #fff);
-    color: var(--ink);
-    font-size: 0.9rem;
-    font-weight: 600;
-    white-space: nowrap;
-    box-shadow: 0 6px 16px rgba(49, 46, 56, 0.06);
-    transform: rotate(var(--chip-tilt, 0deg));
-    transition: transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1), box-shadow 0.3s ease;
-}
-
-.interest-chip span {
-    width: 28px;
-    height: 28px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.75);
-    font-size: 0.95rem;
-}
-
-.interest-chip:hover {
-    transform: rotate(0deg) translateY(-4px) scale(1.05);
-    box-shadow: 0 12px 24px rgba(181, 87, 127, 0.16);
-}
-
 /* ── Floating background blobs ───────────────────────────── */
 
 .home-blobs {
@@ -494,8 +423,7 @@
     .hero-text > *,
     .hero-name,
     .hero-typed__caret,
-    .scroll-cue span,
-    .interests__track {
+    .scroll-cue span {
         animation: none;
     }
 
@@ -515,7 +443,7 @@
 .featured-project {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    margin-top: 22px;
+    margin-top: clamp(32px, 5vw, 56px);
     overflow: hidden;
     border-radius: 30px;
     border: 1px solid rgba(224, 122, 155, 0.16);

@@ -1,5 +1,4 @@
 import { FeaturedProject } from "../components/home/FeaturedProject";
-import { InterestsMarquee } from "../components/home/InterestsMarquee";
 import { MiniMe } from "../components/home/MiniMe";
 import { MomentsSection } from "../components/home/MomentsSection";
 import { ProjectsSection } from "../components/home/ProjectsSection";
@@ -60,7 +59,6 @@ export function HomePage() {
         </button>
       </section>
 
-      <InterestsMarquee />
       <FeaturedProject />
 
       <MomentsSection />
