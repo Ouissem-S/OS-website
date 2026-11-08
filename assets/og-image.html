@@ -1,0 +1,71 @@
+<!doctype html>
+<!-- Source for public/og-image.png (1200x630). Render with:
+     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --hide-scrollbars \
+       --virtual-time-budget=5000 --window-size=1200,630 --screenshot=public/og-image.png assets/og-image.html -->
+<html>
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@600;700&display=block" rel="stylesheet">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    background: #fdfaf8;
+    font-family: "Nunito", Arial, sans-serif;
+    color: #2f3037;
+  }
+  /* pink drifting in from the top-right corner, a little echo bottom-left */
+  .wash {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 760px 560px at 100% 0%, #f3cbd8 0%, rgba(243,203,216,0.55) 40%, rgba(253,250,248,0) 72%),
+      radial-gradient(ellipse 520px 360px at 0% 100%, rgba(246,214,224,0.7) 0%, rgba(253,250,248,0) 70%);
+  }
+  .grain {
+    position: absolute; inset: 0; opacity: 0.2; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.45  0 0 0 0 0.47  0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .content { position: absolute; left: 110px; top: 188px; }
+  h1 {
+    font-family: "Fredoka", Arial, sans-serif; font-weight: 600;
+    font-size: 132px; line-height: 1; letter-spacing: -1.5px; color: #2f3037;
+  }
+  .sub {
+    position: relative; display: inline-block;
+    margin-top: 26px;
+    font-family: "Fredoka", Arial, sans-serif; font-weight: 500;
+    font-size: 60px; color: #b5577f;
+  }
+  .sub svg { position: absolute; left: -6px; bottom: -22px; }
+  .cat { position: absolute; left: 960px; top: 318px; transform: rotate(-4deg); }
+</style>
+</head>
+<body>
+  <div class="wash"></div>
+  <div class="grain"></div>
+
+  <!-- small hand-drawn cat -->
+  <svg class="cat" width="150" height="170" viewBox="0 0 120 140" fill="none" stroke="#d9779a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M92 128 C 116 126, 118 98, 102 92"/>
+    <path d="M30 50 L 26 16 L 46 33 Q 60 29 74 33 L 94 16 L 90 50 Q 96 70 80 80 C 100 95, 104 124, 92 134 L 32 134 C 18 124, 22 95, 40 80 Q 24 70 30 50 Z" fill="#fdfaf8"/>
+    <path d="M44 56 q 4 4 8 0 M 68 56 q 4 4 8 0"/>
+    <path d="M58 63 l 2 2.5 l 2 -2.5" stroke-width="3"/>
+    <path d="M36 63 l -14 -3 M 36 68 l -14 2 M 84 63 l 14 -3 M 84 68 l 14 2" stroke-width="2.5"/>
+    <circle cx="42" cy="66" r="4" fill="#f1cbd8" stroke="none"/>
+    <circle cx="78" cy="66" r="4" fill="#f1cbd8" stroke="none"/>
+  </svg>
+
+  <div class="content">
+    <h1>Ouissem Salag</h1>
+    <div class="sub">Portfolio
+      <!-- hand-drawn underline -->
+      <svg width="248" height="26" viewBox="0 0 290 26" preserveAspectRatio="none" fill="none">
+        <path d="M4 15 C 50 7, 110 6, 160 10 C 200 13, 245 9, 284 6" stroke="#e2a3b8" stroke-width="6" stroke-linecap="round"/>
+        <path d="M30 21 C 90 15, 170 15, 250 16" stroke="#e2a3b8" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+      </svg>
+    </div>
+  </div>
+
+</body>
+</html>
