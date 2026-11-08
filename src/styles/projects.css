@@ -330,6 +330,37 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
+/* Owner mode: drag-and-drop a cover onto the card */
+.project-card__drop {
+    position: absolute;
+    inset: 8px;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    padding: 12px;
+    border: 2px dashed rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    background: rgba(126, 58, 92, 0.55);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+    pointer-events: none;
+}
+
+.project-card__drop button {
+    pointer-events: auto;
+    margin-left: 6px;
+    padding: 2px 10px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--berry);
+    font-weight: 700;
+    cursor: pointer;
+}
+
 .project-card__edit-cover:hover {
     background: #fff;
     transform: translateY(-1px);

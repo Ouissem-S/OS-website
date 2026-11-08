@@ -1,6 +1,6 @@
-import { useState, type CSSProperties, type PointerEvent } from "react";
+import { useState, type CSSProperties, type DragEvent, type PointerEvent } from "react";
 import { repoTitle, type GithubRepo } from "../../lib/github";
-import type { ProjectCover } from "../../lib/projectCovers";
+import { readCoverFile, saveProjectCover, type ProjectCover } from "../../lib/projectCovers";
 import { ProjectCoverEditor } from "./ProjectCoverEditor";
 
 // Each card cycles through a different pink gradient.
@@ -77,6 +77,43 @@ export function ProjectCard({
 }) {
   const [from, to] = palettes[index % palettes.length];
   const [editing, setEditing] = useState(false);
+  // Owner mode: drag a picture/video from your computer onto the cover to set it.
+  const [dragDepth, setDragDepth] = useState(0);
+  const [dropStatus, setDropStatus] = useState<"idle" | "saving" | "error">("idle");
+  const [dropError, setDropError] = useState("");
+
+  const hasFiles = (event: DragEvent) => event.dataTransfer.types.includes("Files");
+
+  const dropHandlers = editable
+    ? {
+        onDragEnter: (event: DragEvent<HTMLDivElement>) => {
+          if (!hasFiles(event)) return;
+          event.preventDefault();
+          setDragDepth((depth) => depth + 1);
+        },
+        onDragOver: (event: DragEvent<HTMLDivElement>) => {
+          if (!hasFiles(event)) return;
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "copy";
+        },
+        onDragLeave: () => setDragDepth((depth) => Math.max(0, depth - 1)),
+        onDrop: async (event: DragEvent<HTMLDivElement>) => {
+          event.preventDefault();
+          setDragDepth(0);
+          const file = event.dataTransfer.files[0];
+          if (!file || dropStatus === "saving") return;
+          setDropStatus("saving");
+          setDropError("");
+          try {
+            await saveProjectCover(repo.name, await readCoverFile(file));
+            setDropStatus("idle");
+          } catch (err) {
+            setDropError(err instanceof Error ? err.message : "Saving failed.");
+            setDropStatus("error");
+          }
+        }
+      }
+    : {};
 
   return (
     <article
@@ -85,7 +122,7 @@ export function ProjectCard({
       onPointerMove={tilt}
       onPointerLeave={resetTilt}
     >
-      <div className="project-card__cover">
+      <div className={`project-card__cover${dragDepth > 0 ? " is-drop-target" : ""}`} {...dropHandlers}>
         {cover?.type === "video" ? (
           <video className="project-card__media" src={cover.url} autoPlay={!prefersReducedMotion()} muted loop playsInline preload="metadata" />
         ) : cover ? (
@@ -99,8 +136,18 @@ export function ProjectCard({
         )}
         {isFresh(repo.pushed_at) ? <span className="project-card__fresh">✦ Fresh</span> : null}
         {repo.language ? <span className="project-card__language">{repo.language}</span> : null}
+        {editable && (dragDepth > 0 || dropStatus !== "idle") ? (
+          <div className="project-card__drop" role="status">
+            {dropStatus === "saving" ? "Saving cover…" : dropStatus === "error" ? (
+              <span>
+                {dropError}{" "}
+                <button type="button" onClick={() => setDropStatus("idle")}>OK</button>
+              </span>
+            ) : "Drop to set as cover"}
+          </div>
+        ) : null}
         {editable ? (
-          <button className="project-card__edit-cover" type="button" onClick={() => setEditing(true)}>
+          <button className="project-card__edit-cover" type="button" title="Click to choose a cover, or drag a picture/video onto this card" onClick={() => setEditing(true)}>
             🖼️ Cover
           </button>
         ) : null}

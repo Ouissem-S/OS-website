@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { readFileAsDataURL, readImageAsCompressedDataURL } from "../../lib/files";
-import { guessMediaType, saveProjectCover, type ProjectCover } from "../../lib/projectCovers";
-
-const MAX_VIDEO_BYTES = 25_000_000;
+import { guessMediaType, readCoverFile, saveProjectCover, type ProjectCover } from "../../lib/projectCovers";
 
 export function ProjectCoverEditor({
   repoName,
@@ -30,12 +27,7 @@ export function ProjectCoverEditor({
     setError("");
     setStatus("reading");
     try {
-      if (file.type.startsWith("video/")) {
-        if (file.size > MAX_VIDEO_BYTES) throw new Error("That video is over 25 MB. Try a shorter clip.");
-        setDraft({ type: "video", url: await readFileAsDataURL(file) });
-      } else {
-        setDraft({ type: "image", url: await readImageAsCompressedDataURL(file, 1400, 0.85) });
-      }
+      setDraft(await readCoverFile(file));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not read that file.");
     }
